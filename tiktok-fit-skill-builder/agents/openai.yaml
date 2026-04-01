@@ -1,0 +1,6 @@
+interface:
+  display_name: "筋トレ運用Skill Builder"
+  short_description: "既存コンセプトを維持しながら新しいskillとworkflowを増設する"
+  default_prompt: "Use $tiktok-fit-skill-builder for /skill-* and /workflow-* commands and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true

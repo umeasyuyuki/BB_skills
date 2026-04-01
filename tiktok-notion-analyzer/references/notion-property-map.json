@@ -1,0 +1,18 @@
+{
+  "title": "Name",
+  "post_id": "Post ID",
+  "url": "Post URL",
+  "published_at": "Published At",
+  "views": "Views",
+  "likes": "Likes",
+  "comments": "Comments",
+  "saves": "Saves",
+  "engagement_rate": "Engagement Rate",
+  "like_rate": "Like Rate",
+  "comment_rate": "Comment Rate",
+  "save_rate": "Save Rate",
+  "content_summary": "Content Summary",
+  "why_engagement": "Why Engagement",
+  "save_improvements": "Save Improvements",
+  "analysis_markdown": "Analysis"
+}

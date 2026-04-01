@@ -1,0 +1,11 @@
+{
+  "title": "Name",
+  "theme": "Theme",
+  "workflow": "Workflow",
+  "status": "Status",
+  "approved": "Approved",
+  "created_at": "Created At",
+  "approved_at": "Approved At",
+  "source_url": "Source URL",
+  "tags": "Tags"
+}

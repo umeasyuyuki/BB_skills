@@ -1,0 +1,6 @@
+interface:
+  display_name: "筋トレ投稿コンプラチェック"
+  short_description: "薬機法と科学整合を赤黄緑で点検し安全な言い換え案を返す"
+  default_prompt: "Use $tiktok-fit-compliance-check to handle /check-* commands and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true

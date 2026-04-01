@@ -1,2 +1,12 @@
 .DS_Store
 *.log
+
+# Notion設定（個人のDB IDが含まれるため除外）
+**/.notion-target.json
+
+# 投稿データ（個人コンテンツのため除外）
+**/data/
+
+# Pythonキャッシュ
+**/__pycache__/
+*.pyc

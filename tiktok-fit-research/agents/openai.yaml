@@ -1,0 +1,6 @@
+interface:
+  display_name: "筋トレ投稿リサーチ"
+  short_description: "日本語ソース優先で根拠を集約し素材管理表を高精度に作成する"
+  default_prompt: "Use $tiktok-fit-research to handle /research-* commands and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true

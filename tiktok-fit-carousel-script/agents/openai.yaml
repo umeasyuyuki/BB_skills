@@ -1,0 +1,6 @@
+interface:
+  display_name: "筋トレフィード台本作成"
+  short_description: "調査結果を保存されやすい日本語カルーセル台本へ変換して整形する"
+  default_prompt: "Use $tiktok-fit-carousel-script to handle /script-* commands and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true

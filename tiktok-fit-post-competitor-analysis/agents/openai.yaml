@@ -1,0 +1,6 @@
+interface:
+  display_name: "投稿単位競合分析"
+  short_description: "テーマごとに競合投稿を抽出し独自化ポイントと実装指示を作成する"
+  default_prompt: "Use $tiktok-fit-post-competitor-analysis for /analyze-* commands and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true

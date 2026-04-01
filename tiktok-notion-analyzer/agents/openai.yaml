@@ -1,0 +1,4 @@
+interface:
+  display_name: "TikTok Insight"
+  short_description: "Analyze TikTok posts and save insights to Notion"
+  default_prompt: "Analyze TikTok post metrics and content, explain why engagement happened, propose save-focused improvements, and store the result in Notion."

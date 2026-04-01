@@ -1,0 +1,19 @@
+{
+  "title": "サイゼリヤの筋トレ飯5選",
+  "theme": "サイゼリヤの最強筋トレ飯5選",
+  "workflow": "picks",
+  "status": "承認済み",
+  "approved": true,
+  "created_at": "2026-02-14",
+  "approved_at": "2026-02-14T00:00:00+00:00",
+  "source_url": "",
+  "tags": ["picks", "外食", "筋トレ"],
+  "sections": {
+    "title_suggestions": "# タイトル改善案（5つ）\n\n1. タイトル案1\n2. タイトル案2\n3. タイトル案3\n4. タイトル案4\n5. タイトル案5",
+    "research": "ここに調査結果Markdown",
+    "compliance_check": "ここに評価チェック結果Markdown",
+    "script": "ここに台本Markdown",
+    "summary_table": "ここに総まとめ表Markdown",
+    "references": "ここに根拠リンクMarkdown"
+  }
+}
