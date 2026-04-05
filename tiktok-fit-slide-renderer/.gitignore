@@ -1,0 +1,13 @@
+# 生成画像・マニフェスト（ローカル生成物）
+data/pipeline/images/*/
+!data/pipeline/images/.gitkeep
+
+# 生成されたYAMLマニフェスト
+data/pipeline/drafts/*_render_manifest.yaml
+
+# フィードバックログ（個人データ）
+data/pipeline/feedback_log.jsonl
+
+# Python
+__pycache__/
+*.pyc

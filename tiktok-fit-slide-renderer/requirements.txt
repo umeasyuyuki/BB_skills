@@ -1,0 +1,3 @@
+Pillow>=12.0.0
+budoux>=0.7.0
+PyYAML>=6.0

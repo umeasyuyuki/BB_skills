@@ -1,0 +1,45 @@
+{
+  "canvas": {
+    "width": 1080,
+    "height": 1080,
+    "background": "#FFFFFF",
+    "margin": 80
+  },
+  "size_map": {
+    "大": {
+      "pointsize": 130,
+      "weight": "Black",
+      "line_spacing": 30
+    },
+    "中": {
+      "pointsize": 80,
+      "weight": "Bold",
+      "line_spacing": 24
+    },
+    "小": {
+      "pointsize": 44,
+      "weight": "Bold",
+      "line_spacing": 16
+    }
+  },
+  "color_map": {
+    "黒": "#1a1a1a",
+    "赤": "#E60012",
+    "青": "#1E40AF"
+  },
+  "font_file": "NotoSansJP-VF.ttf",
+  "vertical_padding": 50,
+  "number_auto_colorize": true,
+  "number_color": "#1E40AF",
+  "number_pattern": "\\d+(?:[.,]\\d+)?(?:〜\\d+(?:[.,]\\d+)?)?(?:kg|g|mg|%|回|時間|分|秒|円|cm|mm|m|本|個|枚|日|週|年|月|ml|L)?",
+  "table": {
+    "header_weight": "Black",
+    "cell_weight": "Bold",
+    "header_pointsize": 42,
+    "cell_pointsize": 38,
+    "border_color": "#1a1a1a",
+    "border_width": 3,
+    "header_bg": "#1a1a1a",
+    "header_fg": "#FFFFFF"
+  }
+}
