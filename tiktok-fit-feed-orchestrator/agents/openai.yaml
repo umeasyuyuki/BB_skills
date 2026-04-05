@@ -1,6 +1,0 @@
-interface:
-  display_name: "筋トレフィード統合オーケストレーター"
-  short_description: "カテゴリ別コマンドで調査から公開前チェックとNotion保存まで統合実行する"
-  default_prompt: "Use $tiktok-fit-feed-orchestrator to process /orchestrate-* commands, return Japanese Markdown output, and auto-save the final package to Notion."
-policy:
-  allow_implicit_invocation: true

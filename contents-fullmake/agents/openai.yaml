@@ -1,0 +1,6 @@
+interface:
+  display_name: "Contents Fullmake（TikTok/Note/X 一括生成）"
+  short_description: "テーマ1つでTikTokカルーセル台本+画像、Note記事、X投稿の3メディアを一気通貫で生成する"
+  default_prompt: "Use $contents-fullmake to process /contents-fullmake commands, return Japanese Markdown output, and auto-save the final package to Notion."
+policy:
+  allow_implicit_invocation: true

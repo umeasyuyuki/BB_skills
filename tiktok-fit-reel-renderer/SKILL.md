@@ -111,7 +111,7 @@ cd /Users/asyuyukiume/Projects/Reel-movie
 ## Orchestrator 連携フロー
 
 ```
-/tiktok-fit-feed-orchestrator テーマ名
+/contents-fullmake テーマ名
   → 台本Markdown生成 + Notion保存
   → ./build.sh --script 台本.md     (Phase 1)
   → 画像を手動作成

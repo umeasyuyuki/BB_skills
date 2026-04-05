@@ -7,8 +7,9 @@ Brain Bulking の TikTok フィード投稿を自動生成する Claude Code ス
 
 ## 必要なもの
 
-- Mac（Windows 未対応）
+- Mac または Windows
 - [Claude Code](https://claude.ai/code) がインストール済みであること
+- Python 3.10 以上（画像生成を使う場合）
 
 ---
 
@@ -42,13 +43,13 @@ cd ~/Projects/BB_skills && chmod +x setup.sh && ./setup.sh
 
 Claude Code を開いて、以下のコマンドを入力するだけです。
 
-### フルフロー（リサーチ → 台本 → 薬機法チェック → Notion保存）
+### フルフロー（リサーチ → 台本・Note・X → 薬機法チェック → Notion保存 → 画像生成）
 
 ```
-/tiktok-fit-feed-orchestrator
+/contents-fullmake
 ```
 
-実行すると、カテゴリとテーマを順番に聞いてきます。
+実行すると、カテゴリとテーマを順番に聞いてきます。TikTokカルーセル台本+画像、Note記事、X投稿を1コマンドで全部作れます。
 
 **カテゴリ一覧:**
 
@@ -76,15 +77,17 @@ Claude Code を開いて、以下のコマンドを入力するだけです。
 
 | スキル名 | 役割 |
 |---|---|
-| tiktok-fit-feed-orchestrator | 入口。全フローを統合実行 |
+| **contents-fullmake** | **入口。テーマ1つで3メディア全生成+画像化** |
 | tiktok-fit-research | 科学的根拠・論文の調査 |
 | tiktok-fit-post-competitor-analysis | 競合投稿の分析 |
 | tiktok-fit-carousel-script | 台本生成（本体） |
 | tiktok-fit-compliance-check | 薬機法・表現チェック |
 | tiktok-fit-notion-publisher | Notion への保存 |
+| tiktok-fit-slide-renderer | カルーセルPNG画像の自動生成（Pillow） |
+| note-writer | Note記事の生成 |
 | tiktok-fit-trend-research | トレンド調査 |
 | tiktok-fit-insta-single | 1枚まとめ画像の生成 |
-| tiktok-fit-slide-image-generator | スライド画像の一括生成 |
+| tiktok-fit-slide-image-generator | スライド画像の一括生成（AI） |
 | tiktok-fit-reel-renderer | リール動画のレンダリング |
 | tiktok-fit-skill-builder | 新スキルの設計 |
 | tiktok-notion-analyzer | TikTok 投稿の分析 |
