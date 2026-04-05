@@ -113,30 +113,162 @@ Agent 2（並列起動）:
     盲点を発見したら SendMessage({to: "researcher"}) で追加調査を依頼せよ。
 ```
 
-### Phase 2: 直列実行（script → compliance → notion）
+### Phase 2: 3メディア並列生成
 
-Phase 1 の結果をマージした後、以下を順番に実行する。
+Phase 1 の結果をマージした後、**3つのコンテンツを同時に生成**する。
 
-3. `tiktok-fit-carousel-script`（Phase 1 のマージ結果を入力として台本生成）
-4. `tiktok-fit-compliance-check`（台本を入力として薬機法チェック）
-5. `tiktok-fit-notion-publisher`（全成果物をNotion保存）
+Agent ツールで以下の3エージェントを**同一メッセージ内で同時に起動**する。
+
+| メディア | name | 担当 | 出力 |
+|---|---|---|---|
+| カルーセル | `carousel-writer` | `tiktok-fit-carousel-script` | 台本＋キャプション（3500字以上） |
+| Note記事 | `note-writer` | `note-writer` スキル | 3000-4000字の知識発信記事 |
+| X投稿 | `x-post-writer` | 本スキル内のX投稿生成ルール | 280字以内のフック投稿 |
+
+#### 各メディアの役割
+
+| メディア | 役割 | 深さ | KPI |
+|---|---|---|---|
+| カルーセル | 保存・コメント誘導 | フック＋結論（浅く広く） | 保存数・コメント数 |
+| Note記事 | SEO＋信頼構築 | メカニズム深掘り | PV・滞在時間 |
+| X投稿 | 拡散・流入導線 | 最強の1行 | RT・いいね |
+
+#### Phase 2 の起動テンプレート
+
+```
+Agent 1（並列起動）:
+  name: "carousel-writer"
+  subagent_type: "general-purpose"
+  prompt: |
+    テーマ「{theme}」について tiktok-fit-carousel-script スキルに従い台本を生成せよ。
+    カテゴリ: {workflow}。
+    以下のマージ済みリサーチ結果を入力として使え:
+    {merged_research}
+
+Agent 2（並列起動）:
+  name: "note-writer"
+  subagent_type: "general-purpose"
+  prompt: |
+    テーマ「{theme}」について note-writer スキルに従い Note 記事を生成せよ。
+    ワークフロー: Phase 1 のリサーチ結果を入力として使い、Phase 1（調査）をスキップして Phase 2（執筆）から開始せよ。
+    リサーチパッケージ:
+    {merged_research}
+
+Agent 3（並列起動）:
+  name: "x-post-writer"
+  subagent_type: "general-purpose"
+  prompt: |
+    テーマ「{theme}」について X 投稿（280字以内）を生成せよ。
+    X投稿生成ルール（後述）に従うこと。
+    リサーチ結果:
+    {merged_research}
+```
+
+### Phase 3: 薬機法チェック（3メディア一括）
+
+Phase 2 の3つの出力をまとめて `tiktok-fit-compliance-check` に渡す。
+
+- カルーセル台本＋キャプション
+- Note記事本文
+- X投稿本文
+
+3メディア分を一括でチェックし、修正が必要な箇所があれば各メディアの該当テキストを修正する。
+
+### Phase 4: Notion保存（同一DB・3ページ）
+
+3つのコンテンツを `tiktok-fit-notion-publisher` で**同一テーマ・別ページ**として保存する。
+
+| ページ | content_type | 含むセクション |
+|---|---|---|
+| カルーセル | `carousel` | title_suggestions, research, script, caption, compliance_check, summary_table, references |
+| Note記事 | `note` | title_suggestions, body, references |
+| X投稿 | `x_post` | body, references |
+
+`content_type` プロパティでフィルタリングできるため、同一DBで管理可能。
 
 ### フォールバック
 
-エージェントチーム機能が利用できない環境では、従来の直列実行にフォールバックする:
+エージェントチーム機能が利用できない環境では、直列実行にフォールバックする:
 
 1. `tiktok-fit-research`
 2. `tiktok-fit-post-competitor-analysis`
-3. `tiktok-fit-carousel-script`
-4. `tiktok-fit-compliance-check`
-5. `tiktok-fit-notion-publisher`
+3. `tiktok-fit-carousel-script`（カルーセル台本＋キャプション）
+4. `note-writer`（Note記事。Phase 1 のリサーチ結果を入力とし、note-writer の Phase 1 をスキップ）
+5. X投稿生成（本スキル内ルールに従い直接生成）
+6. `tiktok-fit-compliance-check`（3メディア一括）
+7. `tiktok-fit-notion-publisher`（3ページ保存）
+
+## X投稿生成ルール
+
+Phase 2 の `x-post-writer` が従うルール。
+
+### 基本制約
+
+- 280字以内（厳守）
+- 日本語
+- 1投稿＝1メッセージ（スレッドにしない）
+- ハッシュタグは2〜3個まで
+
+### 構成
+
+```
+{フック（最強の1行）}
+
+{補足1行（数値 or 対比構造）}
+
+{CTA or 導線}
+
+#ハッシュタグ1 #ハッシュタグ2
+```
+
+### フックの設計原則
+
+- カルーセルの1枚目（挑発）のテキストを凝縮する
+- 「え？」と思わせる数値 or 対比構造を先頭に置く
+- 句読点を最小限にし、改行で区切る
+
+### 導線の設計
+
+- Noteへの誘導: 「詳しくはNoteで→（リンクは後で差し替え）」
+- カルーセルへの誘導: 「カルーセルで全部見せた→プロフから」
+- リンクなしの場合: CTA（問いかけ）で締める
+
+### BBの口調
+
+- カルーセルと同じトーン（情熱が見える怒り、体言止め可）
+- ただしXは140字程度が最も拡散されるため、短いほど良い
+
+### 出力形式
+
+```markdown
+# X投稿
+
+{投稿本文}
+
+---
+文字数: {N}字
+ハッシュタグ: #xxx #yyy
+導線: Note / カルーセル / なし
+```
 
 ## Notion保存ルール
 
 - 最終成果物は毎回 `tiktok-fit-notion-publisher` に渡して即時保存する
-- `sections.title_suggestions`、`sections.research`、`sections.compliance_check`、`sections.script`、`sections.summary_table`、`sections.references` を必ず埋める
+- **3メディア分を同一DB・別ページとして保存する（content_type で区別）**
 - workflow はこのスキルで最終決定したカテゴリをそのまま引き継ぐ
 - 保存に必要な項目が欠けている場合のみ、欠損項目を補ってから保存する
+
+### カルーセル（content_type: carousel）
+
+`sections.title_suggestions`、`sections.research`、`sections.compliance_check`、`sections.script`、`sections.caption`（★必須）、`sections.summary_table`、`sections.references` を必ず埋める。台本のスタイルメタデータ（メイン・大・赤 等）はNotion装飾に変換して保存する。
+
+### Note記事（content_type: note）
+
+`sections.title_suggestions`、`sections.body`（記事本文）、`sections.references` を埋める。
+
+### X投稿（content_type: x_post）
+
+`sections.body`（投稿本文）、`sections.references` を埋める。
 
 ## 深掘り条件
 
@@ -150,14 +282,27 @@ Phase 1 の結果をマージした後、以下を順番に実行する。
 
 必ずこの順で返す。**タイトル改善案は最初の独立セクションとして必ず出力すること。台本やキャプションの中に埋め込まず、明確に分離する。**
 
+### カルーセル（メイン出力）
+
 1. `タイトル改善案（5つ）`（★必須・最初に出力）ユーザーが入力したテーマに対して、よりフックが強くクリックされやすいタイトル案を5つ提示する。番号付きリストで出力し、Notion保存時は `sections.title_suggestions` に格納する。
 2. `台本`（スタイルメタデータ付きフォーマット。各スライドにテキスト・サイズ・色・感情ラベルを付与）
-3. `キャプション`（3500字以上の長文キャプション）
+3. `キャプション`（★必須・3500字以上の長文キャプション。Notion保存時は `sections.caption` に格納する）
 4. `素材管理表`
 5. `総まとめ表（1枚分の設計）`（Markdown表形式。1行あたり3〜4列。列名はテーマに合わせて柔軟に）
 6. `根拠リンク`
-7. `薬機法・表現チェック結果`
-8. `Notion保存結果`
+
+### Note記事
+
+7. `Note記事`（3000-4000字。note-writer スキルの黄金構成テンプレートに従う）
+
+### X投稿
+
+8. `X投稿`（280字以内。X投稿生成ルールに従う）
+
+### 共通
+
+9. `薬機法・表現チェック結果`（3メディア一括）
+10. `Notion保存結果`（3ページ分のURLを出力）
 
 ## カテゴリ配分の運用目標
 
@@ -168,15 +313,27 @@ Phase 1 の結果をマージした後、以下を順番に実行する。
 
 ## 必須ゲート
 
+### カルーセル
 - 日本語ソース優先ゲート
 - 保存率0.5%閾値ゲート
 - 分かりやすさゲート（高校生レベル）
 - 総まとめ表ゲート（1投稿につき1枚必須）
 - 感情設計ゲート（各スライドに感情ラベルが付与されているか）
 - スタイルメタデータゲート（各スライドにテキスト・サイズ・色が付与されているか）
-- コメント誘導ゲート（CTAが承認欲求を刺激する問い形式になっているか）
-- 薬機法・表現ゲート
-- Notion保存完了ゲート
+- コメント誘導ゲート（CTAが `A × B = ?` 数式テンプレート形式になっているか）
+- キャプション文字数ゲート（3500字以上）
+
+### Note記事
+- 文字数ゲート（3000-4000字）
+- 黄金構成テンプレート準拠ゲート
+
+### X投稿
+- 文字数ゲート（280字以内）
+- フック設計ゲート（先頭1行で「え？」を引き出せるか）
+
+### 共通
+- 薬機法・表現ゲート（3メディア一括）
+- Notion保存完了ゲート（3ページ全て保存されているか）
 
 ## 参照
 
