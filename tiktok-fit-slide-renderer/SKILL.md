@@ -151,8 +151,19 @@ python3 scripts/analyze_feedback.py
 - フォーマット: PNG
 - サイズ: 1080×1080（1:1）
 - 背景: #FFFFFF
-- 出力先: `data/pipeline/images/<slug>/slide_NN.png`
-- ログ: `data/pipeline/images/<slug>/manifest.json`
+- 出力先: `$BB_IMAGE_DIR/<slug>/slide_NN.png`（環境変数未設定時は `./output/投稿画像/<slug>/`）
+- ログ: 出力先ディレクトリ内の `manifest.json`
+
+### 画像出力先の設定
+
+環境変数 `BB_IMAGE_DIR` で出力先を指定する。Git共有時に個人の絶対パスが混入しないための設計。
+
+```bash
+# 例: ~/.zshrc に追加
+export BB_IMAGE_DIR="/Users/yourname/Brain Bulking/投稿画像"
+```
+
+未設定時はプロジェクト内の `./output/投稿画像/<slug>/` にフォールバックする。`--output-dir` フラグで都度上書きも可能。
 
 ## 参照
 

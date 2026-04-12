@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -48,7 +49,8 @@ SKILL_DIR = SCRIPT_DIR.parent
 CONFIG_PATH = SKILL_DIR / "templates" / "style_config.json"
 FONT_DIR = SKILL_DIR / "fonts"
 DRAFT_DIR = SKILL_DIR / "data" / "pipeline" / "drafts"
-IMAGE_DIR = SKILL_DIR / "data" / "pipeline" / "images"
+_env_image_dir = os.environ.get("BB_IMAGE_DIR")
+IMAGE_DIR = Path(_env_image_dir) if _env_image_dir else SKILL_DIR / "output" / "投稿画像"
 FEEDBACK_LOG = SKILL_DIR / "data" / "pipeline" / "feedback_log.jsonl"
 
 
