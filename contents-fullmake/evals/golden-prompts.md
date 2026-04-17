@@ -1,12 +1,229 @@
-# Golden Prompts
+# Golden Prompts（contents-fullmake 回帰テスト）
 
-## Success cases
+このスキルが正しく動いているかを確認するためのテストケース集。
+新機能追加時はこのファイルにケースを追記する。
 
-- Use contents-fullmake for its primary repeated workflow.
-- Ask for the expected output format and required inputs.
-- Confirm the skill follows its documented constraints.
+---
 
-## Failure probes
+## Success cases（正常系）
 
-- Missing prerequisite inputs for contents-fullmake
-- Request that should stay project-local instead of using contents-fullmake
+### Case 1: 比較系フルフロー（compare）
+
+**入力**:
+```
+/contents-fullmake compare ホエイ vs カゼイン
+```
+
+**期待される動作**:
+- Phase 1: TeamCreate でチーム作成 → researcher / competitor-analyst が並列起動 → SendMessage 双方向通信
+- Phase 1.5: タイトル20個生成（5パターン×各4個）→ 5軸評価 → TOP10 提示 → ユーザー選択待ち
+- Phase 2: 採用タイトル原案を3メディアエージェントに渡し、各自微調整 → 並列生成
+- Phase 3: 3メディア一括 薬機法チェック
+- Phase 4: Notion 3 ページ保存（carousel に title_candidates 4 ブロック含む）
+- Phase 5: ユーザー承認後に画像生成
+
+**チェック項目**:
+- [ ] カルーセル 10 枚生成
+- [ ] キャプション 3500 字以上
+- [ ] Note 3000-4000 字
+- [ ] X 投稿 long モード 1500-2500 字（既定）
+- [ ] Notion 3 ページ保存完了
+- [ ] title_candidates にパターン別ベスト 5 件が含まれる
+
+### Case 2: 成分解説系（ingredient）
+
+**入力**:
+```
+/contents-fullmake ingredient アシュワガンダ
+```
+
+**期待される動作**:
+- 作用機序の噛み砕き説明が含まれる
+- PubMed 引用が研究セクションに含まれる
+- カテゴリ別必須項目（誰向け／結論／実行条件／注意点）が網羅される
+
+### Case 3: 発見解剖系（discovery・10枚固定）
+
+**入力**:
+```
+/contents-fullmake discovery 大谷の卵16個
+```
+
+**期待される動作**:
+- カルーセルが 10 枚固定
+- 桁スケール感情型が含まれる
+- 「真似できる要素 vs できない要素」の切り分けが明示される
+
+### Case 4: タイトル生成 Phase 1.5 単独
+
+**シナリオ**: テーマ「プロテイン3000円以下ベスト3」で title-generator/evaluator のみ動作確認
+
+**チェック項目**:
+- [ ] ちょうど 20 個生成される（19 個でも 21 個でも不可）
+- [ ] 5パターン×各4個の配分
+- [ ] 各タイトルに `[pattern: xxx] [chars: N]` メタラベル付与
+- [ ] 評価結果に5軸（フック／心理／可読／BB思想／リスク）の点数と理由が全件付与
+- [ ] TOP10 提示時に「一言評」が含まれる
+- [ ] 残り10件が `<details>` で折りたたみ提示
+- [ ] ユーザー選択前に Phase 2 が起動しない
+
+### Case 5: Phase 0 自動判定（高信頼度）
+
+**入力**:
+```
+/contents-fullmake ホエイ vs カゼイン
+```
+
+**期待される動作**:
+- Phase 0 で「compare（95%）」と判定 → 1行で理由報告 → Phase 1 即起動
+- ユーザー確認ステップを挟まない
+
+### Case 6: Phase 0 自動判定（曖昧・ユーザー選択）
+
+**入力**:
+```
+/contents-fullmake ホエイ
+```
+
+**期待される動作**:
+- Phase 0 で候補1「ingredient (70%)」／候補2「compare (50%)」を提示
+- ユーザーが番号 or 別カテゴリを選ぶまで Phase 1 起動禁止
+- 選択後に Phase 1 起動
+
+### Case 7: 対話モード（カテゴリ未指定）
+
+**入力**:
+```
+/contents-fullmake
+```
+
+**期待される動作**:
+- カテゴリ選択肢 5 つを提示
+- ユーザーがカテゴリを選んだ後、テーマを質問
+- テーマ受領後にフルフロー実行
+
+---
+
+## Failure probes（異常系・ガード確認）
+
+### Probe 0: Phase 0 で曖昧なのに即実行
+
+**シナリオ**: 「ホエイ」(信頼度 70%) を即実行しようとする
+
+**期待される動作**:
+- 信頼度閾値ゲート（80% 未満）で止まる
+- 候補トップ2をユーザー提示
+
+### Probe 1: タイトル20個未満
+
+**シナリオ**: title-generator が 18 個しか生成しなかった
+
+**期待される動作**:
+- quality-gates.md の「タイトル生成数ゲート」で弾かれる
+- title-generator にリトライまたは追加生成を指示
+- Phase 1.5 Step C（ユーザー提示）に進まない
+
+### Probe 2: パターン配分の偏り
+
+**シナリオ**: 「疑問形 6個 / 損失回避 4個 / 数値 4個 / 変化 4個 / 秘密 2個」で生成された
+
+**期待される動作**:
+- パターン網羅ゲートで弾かれる
+- 不足パターン（秘密 2個）の追加生成を指示
+
+### Probe 3: ユーザー選択前に Phase 2 起動
+
+**シナリオ**: TOP10 提示直後、ユーザー応答前に Phase 2 が起動しようとする
+
+**期待される動作**:
+- ユーザー選択ゲートで完全停止
+- 「番号で答えてください」のプロンプトが維持される
+
+### Probe 4: キャプション 3500 字未満
+
+**シナリオ**: carousel-writer が 2800 字のキャプションを返した
+
+**期待される動作**:
+- キャプション文字数ゲートで弾かれる
+- carousel-writer に追記指示
+- 3500 字超過まで Phase 3 に進まない
+
+### Probe 5: Phase 4 でキャプション欠落
+
+**シナリオ**: Notion 保存パッケージに `sections.caption` が空の状態
+
+**期待される動作**:
+- ★キャプション保存ガードで保存中断
+- carousel-writer 出力からキャプションを取得 → `sections.caption` に追加 → 保存実行
+
+### Probe 6: 禁止ワード混入
+
+**シナリオ**: 採用タイトルに「最強プロトコル」が含まれている
+
+**期待される動作**:
+- title-evaluator のリスク軸で 0 点（NG ワード）
+- ランキング下位に落ちて TOP10 入りしない
+- 万が一 TOP10 入りしてしまった場合、ユーザー選択時に警告表示
+
+### Probe 7: Phase 5 ユーザー未承認
+
+**シナリオ**: Notion 保存完了後、ユーザーが「画像生成しない」と回答
+
+**期待される動作**:
+- Phase 5 をスキップ
+- 台本 MD のローカルパスのみ報告
+- 「後で手動実行できます」のメッセージ
+
+### Probe 8: TeamCreate 失敗
+
+**シナリオ**: Phase 1 で TeamCreate が何らかの理由で失敗
+
+**期待される動作**:
+- エラーメッセージを明示してユーザーに報告
+- フォールバック経路は意図的に持たない（CONTRIBUTING.md「TeamCreate は普通失敗しない」原則）
+- 失敗時は手動でエージェントを直列起動するよう促す
+
+---
+
+## 学習ログ確認ケース
+
+### Case L1: title_candidates 4ブロック構成
+
+**シナリオ**: 比較系で 1 ジョブ完走後、Notion カルーセルページを確認
+
+**期待される `sections.title_candidates` の中身**:
+
+1. ✅ 採用タイトル（メディア別 3 形態：カルーセル / Note / X）
+2. ✅ TOP10 ランキング（5 軸スコアと「この案の良さ／弱点」付き）
+3. ✅ パターン別ベスト 5 件（疑問形 / 損失回避 / 数値 / 変化 / 秘密 各1件、効く理由とテーマ応用）
+4. ✅ マーケター総評（次回試したいアプローチ・BB との相性・避けるべき表現・ジャンル横断の気づき）
+
+**学びの質チェック**:
+- 「なぜそのパターンが効くか」がメカニズム解説とセットで書かれているか
+- 「次回への学び」が具体的に書かれているか（「もっと頑張る」のような抽象は NG）
+
+---
+
+## SKILL.md 構造ガード
+
+### Case S1: 上限超過の検知
+
+```bash
+./scripts/check_skill_size.sh contents-fullmake
+```
+
+**期待される出力**: 全ファイル上限内（エラー 0 件）
+
+### Case S2: Drift 検知
+
+```bash
+grep -r "picks\|myth\|harms\|intake" contents-fullmake/
+```
+
+**期待される出力**: 旧カテゴリ参照ゼロ（依存スキル側の改修は別タスク）
+
+### Case S3: 二重定義検知
+
+SKILL.md と references/ で **同じ閾値** が両方に書かれているか確認：
+- 「3500 字」は SKILL.md / quality-gates.md の両方に存在 OK（両方とも 3500 字なら整合）
+- 片方が 3000 字なら Drift → 修正必須
