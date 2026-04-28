@@ -7,5 +7,9 @@
   "created_at": "Created At",
   "approved_at": "Approved At",
   "source_url": "Source URL",
-  "tags": "Tags"
+  "tags": "Tags",
+  "content_type": "Content Type",
+  "pricing_mode": "Pricing Mode",
+  "funnel_stage": "Funnel Stage",
+  "paired_post_url": "Paired Post URL"
 }

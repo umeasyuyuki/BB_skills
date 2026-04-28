@@ -1,7 +1,9 @@
 # Notion 保存ルール
 
-`tiktok-fit-notion-publisher` を使い、3メディアを **同一DB・別ページ** として保存する。
+`tiktok-fit-notion-publisher` を使い、カルーセル投稿を **同一 DB のページ** として保存する。
 `content_type` プロパティでフィルタリング可能。
+
+Note 記事 / Threads 投稿の保存は `bb-note-threads` スキルが担当する（`bb-note-threads/references/notion-publishing.md` 参照）。
 
 ## 共通ルール
 
@@ -14,8 +16,6 @@
 | ページ | content_type | 含むセクション |
 |---|---|---|
 | カルーセル | `carousel` | title_candidates, title_suggestions, research, script, caption, compliance_check, summary_table, references |
-| Note記事 | `note` | title_suggestions, body, references |
-| X投稿 | `x_post` | body, references |
 
 ---
 
@@ -40,22 +40,15 @@
 
 ---
 
-## Note記事（content_type: note）
+## Note 記事 / Threads 投稿の保存先
 
-必須：
+本スキル（contents-fullmake）は TikTok カルーセルのみを保存する。Note 記事・Threads 投稿の保存は `bb-note-threads` スキルが担当する:
 
-- `sections.title_suggestions`（採用タイトルの Note 微調整版＋カルーセル/X 微調整版を併記）
-- `sections.body`（記事本文。3000-4000字）
-- `sections.references`
+- `content_type: note` — bb-note-threads が body, references, pricing_mode, funnel_stage, paired_post_url を保存
+- `content_type: threads` — bb-note-threads が body, references, pricing_mode, funnel_stage, paired_post_url を保存
+- `content_type: x_post` — 過去データ（互換用）。新規利用は非推奨
 
----
-
-## X投稿（content_type: x_post）
-
-必須：
-
-- `sections.body`（投稿本文）
-- `sections.references`
+詳細: `bb-note-threads/references/notion-publishing.md` 参照
 
 ---
 
@@ -68,7 +61,7 @@ Phase 1.5 で生成した 20 個のタイトル候補と評価結果を、**投�
 ```markdown
 ## タイトル候補と評価ログ
 
-### 1. 採用タイトル（メディア別3形態）
+### 1. 採用タイトル（カルーセル微調整版）
 
 採用順位: TOP {N}（ユーザー選択）
 パターン: {疑問形 / 損失回避 / 数値 / 変化 / 秘密}
@@ -78,8 +71,6 @@ Phase 1.5 で生成した 20 個のタイトル候補と評価結果を、**投�
 | メディア | 微調整版 | 文字数 | 制約 |
 |---|---|---|---|
 | カルーセル1枚目 | xxx | 18字 | 13-25字 |
-| Note タイトル | xxx | 35字 | 30-40字 |
-| X 冒頭フック | xxx | 28字 | 25-40字 |
 
 学び: 「{なぜこの型が今回のテーマで効いたか}」
 
@@ -137,6 +128,6 @@ Phase 1.5 で生成した 20 個のタイトル候補と評価結果を、**投�
 
 ### 保存方針
 
-- `sections.title_candidates` は **carousel ページにのみ** 格納する（重複防止）
-- Note ページと X ページの `sections.title_suggestions` には「採用タイトル＋メディア微調整版」のみ書き、候補20個は書かない
+- `sections.title_candidates` は **carousel ページにのみ** 格納する
 - 候補ログを参照したい時は carousel ページを見にいく運用
+- bb-note-threads が生成する Note / Threads ページには title_candidates は含めない（bb-note-threads はタイトル評価フローを持たない）

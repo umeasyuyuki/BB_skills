@@ -19,9 +19,10 @@ description: テーマごとに日本語投稿を単位として競合分析し�
 
 - アカウント固定ではなく投稿単位で調査
 - 日本語投稿のみ
-- 対象媒体は TikTok / YouTube / Instagram
+- 対象媒体は TikTok / YouTube / Instagram / Threads / Note
 - 競合の文面をコピーしない
 - 視聴者実用性を最優先で差別化する
+- bb-note-threads から呼ばれる場合は platform に `threads` / `note` を指定する
 
 ## 抽出項目
 

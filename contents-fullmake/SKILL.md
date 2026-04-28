@@ -1,6 +1,6 @@
 ---
 name: contents-fullmake
-description: テーマ1つで「TikTokカルーセル台本+画像、Note記事、X投稿」の3メディアを一気通貫生成。BB（筋トレ情報）アカウント専用。リサーチ・競合分析・タイトル評価・薬機法チェック・Notion保存まで自動。
+description: テーマ1つで TikTok カルーセル台本＋画像を一気通貫生成。BB（筋トレ情報）アカウント専用。リサーチ・競合分析・タイトル評価・薬機法チェック・Notion 保存まで自動。Note 記事と Threads 投稿は bb-note-threads スキルに分離（テキスト媒体専用の独立動線）。
 ---
 
 <!--
@@ -14,7 +14,9 @@ description: テーマ1つで「TikTokカルーセル台本+画像、Note記事�
 
 ## 概要
 
-入口専用スキル。テーマを受け取り、カテゴリ判定 → 調査 → タイトル評価 → 3メディア生成 → 薬機法チェック → Notion 保存 → カルーセル画像生成までを担当する。Phase 1 はエージェントチームで並列実行する。
+入口専用スキル。テーマを受け取り、カテゴリ判定 → 調査 → タイトル評価 → カルーセル台本生成 → 薬機法チェック → Notion 保存 → カルーセル画像生成までを担当する。Phase 1 はエージェントチームで並列実行する。
+
+Note 記事 / Threads 投稿の生成は **本スキルから分離**された `bb-note-threads` スキルが担当する（テキスト媒体専用の独立動線）。本スキルは TikTok カルーセル投稿のみを扱う。
 
 ## 固定プロファイル
 
@@ -81,37 +83,37 @@ Phase 1 のマージ済みリサーチを入力に、5 ステップでタイト�
 | B | `title-evaluator`（プロ SNS マーケター役） | 5 軸（フック／心理／可読／BB思想／リスク）× 各 20 点で採点・ランキング化 |
 | C | オーケストレーター | TOP10 を理由込みでユーザーに提示。残り 10 件は折りたたみ |
 | D | ユーザー | TOP1 を選択（Phase 2 起動はここがブロッキングゲート） |
-| E | Phase 2 各エージェント | 採用タイトルを自メディア用に微調整（カルーセル 13-25 字／Note 30-40 字／X 25-40 字） |
+| E | Phase 2 carousel-writer | 採用タイトルをカルーセル 1 枚目用に微調整（13-25 字） |
 
 参照: `references/title-playbook.md`（5パターンの心理メカニズム・サムネ工学・2026 トレンド・NG パターン）、`references/title-workflow.md`（採点基準・出力形式）
 
-## Phase 2: 3メディア並列生成
+## Phase 2: カルーセル台本生成
 
-Phase 1.5 確定タイトル原案＋マージ済みリサーチを渡し、以下 3 エージェントを **同一メッセージ内で同時起動**する。
+Phase 1.5 確定タイトル原案＋マージ済みリサーチを渡し、`carousel-writer` を起動する。
 
 | name | 担当 | 出力 |
 |---|---|---|
 | `carousel-writer` | `tiktok-fit-carousel-script` | 台本＋キャプション（3500 字以上） |
-| `note-writer` | グローバル `note-writer` スキル | 3000-4000 字の知識発信記事 |
-| `x-post-writer` | 本スキル＋ `references/x-post-style.md` | long（1500-2500 字、既定）or short（280 字以内） |
 
-各エージェントは Phase 1.5 のタイトルを **自メディア制約に合わせて微調整**し、出力先頭に「採用タイトル（{メディア名}微調整版）」を明記する（`references/title-workflow.md` Step E 参照）。
+`carousel-writer` は Phase 1.5 のタイトルを **カルーセル 1 枚目用に微調整**（13-25 字）し、出力先頭に「採用タイトル（カルーセル微調整版）」を明記する（`references/title-workflow.md` Step E 参照）。
 
-各エージェントへの ★絶対遵守★ 事項：
+★絶対遵守★ 事項：
 
 - 台本は各スライドをテキスト形式で出力（テーブル形式 NG）。「メイン・大・赤」をヘッダー行に書き、次行からテキスト
 - 各スライドに感情誘発 4 型（裏切り／桁スケール／対比／自分事化）のいずれか 1 型以上を組み込む
 - カルーセルキャプションは 3,500 字以上必須。Markdown 記号（`**`、`##`、`—`、`／`）を本文に残さない
-- Note 記事は note-writer の Phase 1（調査）をスキップし Phase 2（執筆）から開始
-- `references/writing-style.md` を全メディア必須遵守（プロトコル禁止、AI っぽさ排除、言い切り）
+- `references/writing-style.md` を必須遵守（プロトコル禁止、AI っぽさ排除、言い切り）
+- **TikTok カルーセルには LINE オープンチャット URL を絶対に入れない**（`references/line-oc.md` 参照、Threads / Note 専用動線）
 
-## Phase 3: 薬機法チェック（3メディア一括）
+Note 記事 / Threads 投稿が必要な場合は、別途 `bb-note-threads` スキルを起動する（こちらはタイトル投入で動作）。
 
-Phase 2 の 3 つの出力をまとめて `tiktok-fit-compliance-check` に渡す。修正が必要な箇所は各メディアの該当テキストを修正する。
+## Phase 3: 薬機法チェック
 
-## Phase 4: Notion 保存（同一 DB・3 ページ）
+Phase 2 のカルーセル台本＋キャプションを `tiktok-fit-compliance-check` に渡す。修正が必要な箇所は該当テキストを修正する。
 
-`tiktok-fit-notion-publisher` で同一テーマ・別ページとして保存。`content_type` で区別。
+## Phase 4: Notion 保存（同一 DB・1 ページ）
+
+`tiktok-fit-notion-publisher` で `content_type: carousel` ページとして保存。
 
 スキーマと title_candidates 学習ログ（4ブロック構成：採用案／TOP10ランキング／パターン別ベスト／マーケター総評）の詳細は `references/notion-publishing.md` 参照。
 
@@ -141,9 +143,9 @@ Notion 保存完了しました。
 - **Phase 4 ★キャプション保存ガード**: Notion 保存前確認
 - **Phase 5 ユーザー承認ゲート**: 画像生成前確認
 
-## 文章スタイル（★全メディア必須）
+## 文章スタイル（★必須）
 
-X 投稿・Note 記事・カルーセルキャプションのすべてで `references/writing-style.md` を必ず遵守する。特に：
+カルーセルキャプション・台本本文のすべてで `references/writing-style.md` を必ず遵守する。特に：
 
 - 「プロトコル」絶対禁止
 - Markdown 記号（`**`、`##`、`—`、`：`半角スペース、`／`）を本文に残さない
@@ -162,8 +164,8 @@ X 投稿・Note 記事・カルーセルキャプションのすべてで `refer
 | `references/workflow-spec.md` | カテゴリ別必須項目・Phase 1 チーム通信・10枚感情設計・出力制約 |
 | `references/title-playbook.md` | バズ理論（5パターン心理学・サムネ工学・2026 トレンド・NG） |
 | `references/title-workflow.md` | Phase 1.5 詳細手順（プロンプト・採点基準・提示形式） |
-| `references/x-post-style.md` | X 投稿生成ルール（long/short モード・Note URL 運用） |
 | `references/notion-publishing.md` | Notion 保存スキーマ（title_candidates 学習ログ含む） |
+| `references/line-oc.md` | LINE OC URL 取り扱いルール（カルーセル絶対禁止） |
 | `references/output-spec.md` | 出力順仕様・メディア別タイトル微調整方針・カテゴリ配分目標 |
 | `references/quality-gates.md` | 各 Phase 品質ゲート一覧 |
 | `references/writing-style.md` | AI っぽさ排除・禁止ワード・文章チェックリスト |

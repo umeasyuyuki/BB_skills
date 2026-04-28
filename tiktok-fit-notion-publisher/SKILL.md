@@ -24,16 +24,22 @@ description: 調査・評価チェック・台本などの投稿ドキュメン�
 - `title`
 - `theme`
 - `workflow`
-- `content_type`（`carousel` / `note` / `x_post`）
+- `content_type`（`carousel` / `note` / `threads` / `x_post`（過去データ互換））
 - `status`
 - `approved`
-- `sections.title_suggestions`（★タイトル改善案5つ。必ず独立セクションとして格納する）
+- `sections.title_suggestions`（★タイトル改善案5つ。carousel の場合は必須。threads/note は任意）
 - `sections.research`
 - `sections.compliance_check`
 - `sections.script`
 - `sections.caption`（★キャプション全文。3500字以上。carousel の場合は必須）
 - `sections.summary_table`
 - `sections.references`
+
+### bb-note-threads 用プロパティ（threads / note 保存時に必須）
+
+- `pricing_mode`（`free` / `paid`）— Note 有料化対応の土台
+- `funnel_stage`（`awareness` / `engagement` / `community`）— 動線分析用
+- `paired_post_url`（URL）— Threads ⇔ Note の相互リンク
 
 ## コマンド
 
@@ -97,11 +103,18 @@ description: 調査・評価チェック・台本などの投稿ドキュメン�
 
 ### content_type 別の保存ルール
 
-| content_type | 保存する sections |
-|---|---|
-| `carousel` | title_suggestions, research, script（装飾変換あり）, caption, compliance_check, summary_table, references |
-| `note` | title_suggestions, body（記事本文）, references |
-| `x_post` | body（投稿本文）, references |
+| content_type | 保存する sections | 専用プロパティ |
+|---|---|---|
+| `carousel` | title_suggestions, research, script（装飾変換あり）, caption, compliance_check, summary_table, references | （標準のみ） |
+| `note` | body（記事本文）, references | pricing_mode, funnel_stage, paired_post_url |
+| `threads` | body（投稿本文）, references | pricing_mode, funnel_stage, paired_post_url |
+| `x_post` | body（投稿本文）, references | （過去データ互換用、新規利用は非推奨） |
+
+### bb-note-threads 連携時の保存フロー
+
+1. Threads ページを保存（content_type: threads, funnel_stage: awareness）→ URL_T 取得
+2. Note ページを保存（content_type: note, funnel_stage: engagement）→ URL_N 取得
+3. 両ページの paired_post_url を相互更新（Threads → URL_N、Note → URL_T）
 
 ## 実行ルール
 
