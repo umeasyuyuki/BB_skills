@@ -26,7 +26,7 @@ Note 記事 / Threads 投稿の生成は **本スキルから分離**された `
 - 対象: 20-40 代男性、筋トレ中級以上
 - 文章レベル: 高校生が理解できる日本語
 - 口調: 情熱が見える怒り。事実で殴り、思想を叫ぶ。フレンドリーさより "本気さ"。体言止め可
-- 形式: 画像カルーセル投稿（9〜12 枚可変、discovery のみ 10 枚固定）
+- 形式: 画像カルーセル投稿（**枚数自由、1 画像 1 メッセージ徹底**。目安 8-15 枚、情報量で決まる）
 - 出力: Markdown
 
 ## BB の思想
@@ -162,7 +162,7 @@ Notion 保存完了しました。
 | ファイル | 内容 |
 |---|---|
 | `references/category-router.md` | Phase 0 カテゴリ自動判定シグナル・信頼度計算・提示フォーマット |
-| `references/workflow-spec.md` | カテゴリ別必須項目・Phase 1 チーム通信・10枚感情設計・出力制約 |
+| `references/workflow-spec.md` | カテゴリ別必須項目・Phase 1 仕様・感情設計フレームワーク・出力制約 |
 | `references/title-playbook.md` | バズ理論（5パターン心理学・サムネ工学・2026 トレンド・NG） |
 | `references/title-workflow.md` | Phase 1.5 詳細手順（プロンプト・採点基準・提示形式） |
 | `references/notion-publishing.md` | Notion 保存スキーマ（title_candidates 学習ログ含む） |
