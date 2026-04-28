@@ -75,21 +75,16 @@ Claude Code を開いて、以下のコマンドを入力するだけです。
 
 ## スキル一覧
 
-| スキル名 | 役割 |
-|---|---|
-| **contents-fullmake** | **入口。テーマ1つで TikTok カルーセル全生成 + 画像化** |
-| **bb-note-threads** | **入口。タイトル1つで Threads + Note 並列生成 + Notion 保存** |
-| tiktok-fit-research | 科学的根拠・論文の調査 + 差別化軸抽出 |
-| tiktok-fit-carousel-script | 台本生成（本体） |
-| tiktok-fit-compliance-check | 薬機法・表現チェック |
-| tiktok-fit-notion-publisher | Notion への保存 |
-| tiktok-fit-slide-renderer | カルーセルPNG画像の自動生成（Pillow） |
-| tiktok-fit-trend-research | トレンド調査 |
-| tiktok-fit-insta-single | 1枚まとめ画像の生成 |
-| tiktok-fit-slide-image-generator | スライド画像の一括生成（AI） |
-| tiktok-fit-reel-renderer | リール動画のレンダリング |
-| tiktok-fit-skill-builder | 新スキルの設計 |
-| tiktok-notion-analyzer | TikTok 投稿の分析 |
+| スキル名 | 役割 | スラッシュコマンド |
+|---|---|---|
+| **contents-fullmake** | **入口。テーマ 1 つで TikTok カルーセル全生成 + 画像化** | `/contents-fullmake テーマ --auto-title` |
+| **bb-note-threads** | **入口。タイトル 1 つで Threads + Note 並列生成 + Notion 保存** | `/bb-note-threads "タイトル"` |
+| tiktok-fit-research | 科学的根拠・論文の調査 + 差別化軸抽出（内部呼び出し） | — |
+| tiktok-fit-carousel-script | 台本生成（内部呼び出し） | — |
+| tiktok-fit-compliance-check | 薬機法・表現チェック（内部呼び出し） | — |
+| tiktok-fit-notion-publisher | Notion 保存（内部呼び出し） | — |
+| tiktok-fit-slide-renderer | カルーセル PNG 画像生成（Pillow、内部呼び出し） | — |
+| tiktok-fit-reel-renderer | リール動画（VOICEVOX + BGM）レンダリング | `/render-reel <script.md>` |
 
 ---
 

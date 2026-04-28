@@ -9,12 +9,9 @@ description: 日本語の筋トレ情報発信向けに、科学的根拠と商�
 
 テーマごとに根拠を収集し、台本化しやすい素材管理表を作る。
 
-## コマンド
+## 呼び出し方
 
-- `/research-picks テーマ`
-- `/research-myth テーマ`
-- `/research-harms テーマ`
-- `/research-intake テーマ`
+このスキルは **オーケストレーター（contents-fullmake / bb-note-threads）から内部呼び出し** される。独立したスラッシュコマンドは持たない。直接実行したい場合はオーケストレーター経由で起動すること。
 
 ## ソース方針
 

@@ -27,9 +27,13 @@ pip install -r requirements.txt
 
 以上。Homebrew・ImageMagick等は不要。
 
-## コマンド
+## 呼び出し方
 
-- `/slide-render @ファイルパス` — 3フェーズを対話的に実行
+このスキルは **オーケストレーター（contents-fullmake）から内部呼び出し** される（Phase 5 で `/contents-fullmake` のフロー内で承認後に自動起動）。
+
+直接呼び出したい場合のみ:
+
+- 内部スクリプト: `python3 scripts/render_slides.py --parse --input <script.md>` で 3 フェーズを手動実行
 
 ## 3フェーズワークフロー
 

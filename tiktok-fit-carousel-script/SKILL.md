@@ -9,12 +9,9 @@ description: 調査結果を、保存・コメントされやすい日本語フ�
 
 素材管理表を入力に、フィード投稿用の台本とキャプションを生成する。
 
-## コマンド
+## 呼び出し方
 
-- `/script-compare テーマ`
-- `/script-ingredient テーマ`
-- `/script-entertainment テーマ`
-- `/script-debunk テーマ`
+このスキルは **オーケストレーター（contents-fullmake）から内部呼び出し** される。独立したスラッシュコマンドは持たない。直接実行したい場合は `/contents-fullmake テーマ` 経由で起動すること。
 
 ---
 
