@@ -47,7 +47,7 @@ python3 scripts/render_slides.py --parse --input <script.md>
 
 **編集可能な項目**:
 - `text`: テキスト内容（`|` 記法で複数行）
-- `size`: 大 / 中 / 小
+- `size`: 中 / 小（旧「大」は廃止）
 - `color`: 黒 / 赤 / 青 または `#hex`
 - `skip: true`: スライドを除外
 - `canvas_override`: 個別のcanvas上書き
@@ -105,7 +105,6 @@ python3 scripts/analyze_feedback.py
 
 | 要素 | 値 |
 |---|---|
-| 大サイズ | 130pt / Black weight |
 | 中サイズ | 80pt / Bold weight |
 | 小サイズ | 44pt / Bold weight |
 | 赤 | #E60012 |
@@ -121,7 +120,7 @@ python3 scripts/analyze_feedback.py
 ```markdown
 ## スライド N（役割）
 
-メイン・大・赤
+メイン・中・赤
 テキスト行1
 テキスト行2
 

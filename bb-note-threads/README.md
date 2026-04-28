@@ -24,9 +24,6 @@ LINE オープンチャット（コミュニティ化）
 
 # タイトル直接指定
 /bb-note-threads "プロテイン値上げで起きる栄養格差"
-
-# 競合分析を省略（軽量モード）
-/bb-note-threads "プロテイン値上げで起きる栄養格差" --no-competitor
 ```
 
 ## 実行フロー
@@ -34,12 +31,12 @@ LINE オープンチャット（コミュニティ化）
 | Phase | 内容 | 並列性 | 所要時間 |
 |---|---|---|---|
 | 0 | タイトル受領、カテゴリ自動判定 | — | 〜5 秒 |
-| 1 | リサーチ + 競合分析（並列） | ✅ TeamCreate | 3〜5 分 |
+| 1 | リサーチ（researcher 単独、差別化軸抽出含む） | — | 3〜5 分 |
 | 2 | Threads + Note 並列生成 | ✅ | 3〜4 分 |
 | 3 | 薬機法チェック（両媒体並列） | ✅ | 30 秒 |
 | 4 | Notion 2 ページ保存 + 相互リンク | 直列 | 30 秒 |
 
-合計: 8〜12 分
+合計: 7〜10 分
 
 ## 出力
 
@@ -83,8 +80,7 @@ Notion DB に 2 ページ作成（既存の tiktok-fit-notion-publisher の DB �
 
 | スキル | 役割 | 流用度 |
 |---|---|---|
-| `tiktok-fit-research` | Phase 1 リサーチ | 媒体非依存、そのまま流用 |
-| `tiktok-fit-post-competitor-analysis` | Phase 1 競合分析 | platform に `threads`/`note` 追加で流用 |
+| `tiktok-fit-research` | Phase 1 リサーチ + 差別化軸抽出 | 媒体非依存、そのまま流用 |
 | `tiktok-fit-compliance-check` | Phase 3 薬機法 | そのまま流用 |
 | `tiktok-fit-notion-publisher` | Phase 4 Notion 保存 | content_type に `threads` 追加 + 新プロパティ |
 | `note-writer`（汎用） | 参考実装、現在は使用しない | — |

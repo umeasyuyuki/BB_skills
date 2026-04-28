@@ -56,34 +56,35 @@ Note 記事 / Threads 投稿の生成は **本スキルから分離**された `
 
 ---
 
-## Phase 1: 並列チーム（research + competitor-analysis）
+## Phase 1: リサーチ（researcher 単独）
 
-`TeamCreate({team_name: "contents-fullmake-team"})` でチームを作成し、以下 2 エージェントを `team_name` 指定で同時起動する。`SendMessage` による双方向通信を有効化する。
+`tiktok-fit-research` を `researcher` エージェントとして起動し、科学的根拠・PubMed・公式データを収集する。差別化軸（独自角度の抽出）は researcher の調査範囲に含める。
 
 | name | 担当スキル | 役割 |
 |---|---|---|
-| `researcher` | `tiktok-fit-research` | 科学的根拠・PubMed・公式データの収集 |
-| `competitor-analyst` | `tiktok-fit-post-competitor-analysis` | TikTok/YouTube/Instagram の競合投稿分析 |
+| `researcher` | `tiktok-fit-research` | 科学的根拠・PubMed・公式データ + 既存情報との差別化軸抽出 |
 
-通信ルール:
+詳細は `references/workflow-spec.md` の「Phase 1」参照。
 
-1. **researcher → competitor-analyst**（早期共有）: 調査序盤で「主要キーワード」「発見した切り口」を `SendMessage({to: "competitor-analyst"})` で共有。競合分析側は既存投稿が未カバーの独自角度を優先探索
-2. **competitor-analyst → researcher**（差別化リクエスト）: 盲点発見時に `SendMessage({to: "researcher"})` で追加調査依頼。リサーチャーはエビデンスを補強
-3. **合流**: 両エージェント完了後、オーケストレーターが結果をマージ（重複除去・対応関係整理）→ `TeamDelete` でチーム解散
+## Phase 1.5: タイトル生成＆評価（タイトル自動採用フラグ対応）
 
-詳細は `references/workflow-spec.md` の「Phase 1 チーム通信ルール」「マージ仕様」を参照。
-
-## Phase 1.5: タイトル生成＆評価（ユーザー選択ゲート）
-
-Phase 1 のマージ済みリサーチを入力に、5 ステップでタイトルを確定する。詳細手順とプロンプトテンプレは `references/title-workflow.md` 参照。
+Phase 1 のリサーチを入力に、5 ステップでタイトルを確定する。詳細手順とプロンプトテンプレは `references/title-workflow.md` 参照。
 
 | Step | エージェント / 主体 | 内容 |
 |---|---|---|
-| A | `title-generator` | 5パターン × 各 4 個 = **20 個**生成（疑問形／損失回避／数値／変化／秘密） |
+| A | `title-generator` | 5パターン × 各 2 個 = **10 個**生成（疑問形／損失回避／数値／変化／秘密） |
 | B | `title-evaluator`（プロ SNS マーケター役） | 5 軸（フック／心理／可読／BB思想／リスク）× 各 20 点で採点・ランキング化 |
-| C | オーケストレーター | TOP10 を理由込みでユーザーに提示。残り 10 件は折りたたみ |
-| D | ユーザー | TOP1 を選択（Phase 2 起動はここがブロッキングゲート） |
+| C | オーケストレーター | TOP5 を理由込みで提示 |
+| D | ユーザー or AI 自動 | **`--auto-title` フラグ未指定** → ユーザー選択（ブロッキングゲート）/ **指定時** → AI 採点 TOP1 を自動採用 |
 | E | Phase 2 carousel-writer | 採用タイトルをカルーセル 1 枚目用に微調整（13-25 字） |
+
+### `--auto-title` フラグ
+
+```
+/contents-fullmake テーマ --auto-title
+```
+
+AI 採点 TOP1 を自動採用し、ユーザー選択待ちをスキップ。Notion 保存後、必要なら手動でタイトル差し替え可能。**スピード優先運用**で使う（10 分以内目標達成のため）。
 
 参照: `references/title-playbook.md`（5パターンの心理メカニズム・サムネ工学・2026 トレンド・NG パターン）、`references/title-workflow.md`（採点基準・出力形式）
 

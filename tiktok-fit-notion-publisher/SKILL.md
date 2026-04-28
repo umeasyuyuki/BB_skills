@@ -89,9 +89,10 @@ description: 調査・評価チェック・台本などの投稿ドキュメン�
 
 | 台本のサイズ | Notion ブロックタイプ / 装飾 |
 |---|---|
-| 大 | `heading_3` + `bold: true` |
-| 中 | `paragraph`（通常テキスト） |
-| 小 | `paragraph` + `color: "gray"` |
+| 中 | `heading_3` + `bold: true`（見出し・結論・数値・本文の主要部分） |
+| 小 | `paragraph` + `color: "gray"`（補足・注釈） |
+
+★旧「大」サイズは廃止。台本側でも slide-renderer 側でも「中」「小」の 2 種類のみ受け付ける。
 
 ### レイヤーヘッダー自体の表示
 

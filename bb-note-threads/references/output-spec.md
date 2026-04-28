@@ -11,7 +11,7 @@ bb-note-threads 完了時、オーケストレーターは以下のセクショ�
 | 1 | `title_input` | Phase 0 | ✅ |
 | 2 | `category` | Phase 0 | ✅ |
 | 3 | `research_merged` | Phase 1 | ✅ |
-| 4 | `competitor_analysis` | Phase 1 | ⚠️（`--no-competitor` 時は省略） |
+| 4 | `differentiation_axes` | Phase 1 | ✅（researcher 出力に統合） |
 | 5 | `threads_post` | Phase 2 | ✅ |
 | 6 | `note_article` | Phase 2 | ✅ |
 | 7 | `compliance_threads` | Phase 3 | ✅ |

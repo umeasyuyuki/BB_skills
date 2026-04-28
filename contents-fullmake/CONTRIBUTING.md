@@ -115,13 +115,11 @@ references 内のファイル間で参照する場合は **相対パス** で書
 
 このスキルは以下の外部スキルに依存する：
 
-- `tiktok-fit-research`
-- `tiktok-fit-post-competitor-analysis`
+- `tiktok-fit-research`（差別化軸抽出も担当）
 - `tiktok-fit-carousel-script`
 - `tiktok-fit-compliance-check`
 - `tiktok-fit-notion-publisher`
 - `tiktok-fit-slide-renderer`
-- グローバル `note-writer`
 
 依存スキルの **入力スキーマやコマンド体系を変える時**は、必ず本スキル側の起動プロンプトも併せて更新する。依存スキル側だけ直すと Drift が発生する。
 

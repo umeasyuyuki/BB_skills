@@ -53,7 +53,6 @@ LINE オープンチャット（コミュニティ化）
 |---|---|
 | `/bb-note-threads` | 対話モード：タイトル質問 → フルフロー |
 | `/bb-note-threads "タイトル"` | タイトル即採用 → フルフロー |
-| `/bb-note-threads "タイトル" --no-competitor` | 競合分析を省略する軽量モード |
 
 カテゴリは 5 種：compare / ingredient / entertainment / debunk / discovery（contents-fullmake と共通、L1 誘導文の参考プール選択に使う）
 
@@ -71,22 +70,13 @@ LINE オープンチャット（コミュニティ化）
 
 ---
 
-## Phase 1: 並列調査（research + competitor-analysis）
+## Phase 1: リサーチ（researcher 単独）
 
-`TeamCreate({team_name: "bb-note-threads-team"})` でチームを作成し、以下 2 エージェントを `team_name` 指定で同時起動する。`SendMessage` による双方向通信を有効化する。
+`tiktok-fit-research` を `researcher` エージェントとして起動し、科学的根拠・PubMed・公式データを収集する。差別化軸の抽出も researcher の調査範囲に統合（旧 competitor-analyst は廃止）。
 
 | name | 担当スキル | 役割 |
 |---|---|---|
-| `researcher` | `tiktok-fit-research` | 科学的根拠・PubMed・公式データの収集 |
-| `competitor-analyst` | `tiktok-fit-post-competitor-analysis` | Threads / Note / YouTube の競合投稿分析 |
-
-通信ルール:
-
-1. **researcher → competitor-analyst**（早期共有）: 主要キーワードと発見した切り口を `SendMessage({to: "competitor-analyst"})` で共有
-2. **competitor-analyst → researcher**（差別化リクエスト）: 盲点発見時に追加調査依頼
-3. **合流**: 両エージェント完了後、オーケストレーターが結果をマージ → `TeamDelete` でチーム解散
-
-`--no-competitor` フラグ指定時は competitor-analyst を起動せず、researcher 単体実行とする。
+| `researcher` | `tiktok-fit-research` | 科学的根拠 + 既存情報との差別化軸抽出 |
 
 詳細: `references/workflow-spec.md` の「Phase 1」参照
 
@@ -176,7 +166,7 @@ writer エージェントは出力前に `references/quality-gates.md` の 12 �
 
 ## エラー時の挙動
 
-- Phase 1 で researcher / competitor-analyst が両方失敗した場合: 中断、ユーザーにエラー報告
+- Phase 1 で researcher が失敗した場合: 中断、ユーザーにエラー報告
 - Phase 2 で writer が失敗した場合: もう一方の writer 結果は保持、失敗側のみリトライ
 - Phase 3 で Red 判定が 2 回続いた場合: ユーザーに手動修正を依頼
 - Phase 4 で Notion 保存失敗時: ローカルファイルに `output/<timestamp>/` でバックアップ保存

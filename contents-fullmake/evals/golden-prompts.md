@@ -15,17 +15,17 @@
 ```
 
 **期待される動作**:
-- Phase 1: TeamCreate でチーム作成 → researcher / competitor-analyst が並列起動 → SendMessage 双方向通信
-- Phase 1.5: タイトル20個生成（5パターン×各4個）→ 5軸評価 → TOP10 提示 → ユーザー選択待ち
-- Phase 2: 採用タイトル原案を3メディアエージェントに渡し、各自微調整 → 並列生成
-- Phase 3: 3メディア一括 薬機法チェック
-- Phase 4: Notion 3 ページ保存（carousel に title_candidates 4 ブロック含む）
+- Phase 1: researcher 単独起動 → 科学的根拠 + 差別化軸抽出
+- Phase 1.5: タイトル10個生成（5パターン×各2個）→ 5軸評価 → TOP5 提示 → ユーザー選択 or `--auto-title` 自動採用
+- Phase 2: 採用タイトルを carousel-writer に渡し微調整 → カルーセル単独生成
+- Phase 3: カルーセル薬機法チェック
+- Phase 4: Notion カルーセルページ保存（title_candidates 4 ブロック含む）
 - Phase 5: ユーザー承認後に画像生成
 
 **チェック項目**:
 - [ ] カルーセル 10 枚生成
 - [ ] キャプション 3500 字以上
-- [ ] Note 3000-4000 字
+- [ ] 各スライド 40 字以内・4 行以内
 - [ ] X 投稿 long モード 1500-2500 字（既定）
 - [ ] Notion 3 ページ保存完了
 - [ ] title_candidates にパターン別ベスト 5 件が含まれる

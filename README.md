@@ -77,14 +77,13 @@ Claude Code を開いて、以下のコマンドを入力するだけです。
 
 | スキル名 | 役割 |
 |---|---|
-| **contents-fullmake** | **入口。テーマ1つで3メディア全生成+画像化** |
-| tiktok-fit-research | 科学的根拠・論文の調査 |
-| tiktok-fit-post-competitor-analysis | 競合投稿の分析 |
+| **contents-fullmake** | **入口。テーマ1つで TikTok カルーセル全生成 + 画像化** |
+| **bb-note-threads** | **入口。タイトル1つで Threads + Note 並列生成 + Notion 保存** |
+| tiktok-fit-research | 科学的根拠・論文の調査 + 差別化軸抽出 |
 | tiktok-fit-carousel-script | 台本生成（本体） |
 | tiktok-fit-compliance-check | 薬機法・表現チェック |
 | tiktok-fit-notion-publisher | Notion への保存 |
 | tiktok-fit-slide-renderer | カルーセルPNG画像の自動生成（Pillow） |
-| note-writer | Note記事の生成 |
 | tiktok-fit-trend-research | トレンド調査 |
 | tiktok-fit-insta-single | 1枚まとめ画像の生成 |
 | tiktok-fit-slide-image-generator | スライド画像の一括生成（AI） |
