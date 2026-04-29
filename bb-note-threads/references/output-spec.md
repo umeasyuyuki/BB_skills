@@ -96,6 +96,14 @@ https://line.me/ti/g2/lmmjCh0V39BIgClQxQmsm4Hb-G8Hb7VFsnVOuw
 
 ### Note 記事（`note_article`）
 
+**note.com コピペ最適化規約（A 案、★必須）**:
+
+- 各論理段落は **1 行で完結**。paragraph 内で `\n` 改行を使わない（読みやすさのための改行は空行で表現）
+- 見出しは `## ` (H2) と `### ` (H3) のみ使用、H4 以下は使わない
+- 自動 bold ルール: 数字＋単位、固有名詞、キー結論一文を `**...**` で囲んで出力（詳細は `note-style.md`）
+- 区切り線は `────────` または `---`、引用は `> ` を使用
+- Phase 4 で `scripts/md_to_notion_blocks.py` が markdown → Notion blocks に変換する
+
 **フォーマット**:
 
 ```markdown

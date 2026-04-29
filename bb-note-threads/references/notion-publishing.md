@@ -171,3 +171,72 @@ Threads → Note → LINE OC の動線で、各記事がどの段階に位置す
 ## 過去データとの互換性
 
 contents-fullmake が以前生成した `content_type: x_post` のページは、過去データとして触らない。新規データは bb-note-threads から `content_type: threads` で保存する。`x_post` を `threads` にリネームしない（過去データ保護）。
+
+---
+
+## note.com コピペ最適化のためのブロック変換規則（Note 専用、A 案）
+
+Note ページを Notion → note.com にコピペした際、見出し・段落・箇条書き・太字を保持するため、Phase 4 の Markdown → Notion blocks 変換は以下のルールで行う。Threads ページは対象外（既存仕様維持）。
+
+詳細な writer 側の出力規約は `note-style.md` の「note.com コピペ最適化（A 案）」を参照。
+
+### Markdown → Notion blocks マッピング
+
+| Markdown | Notion ブロック | 備考 |
+|---|---|---|
+| `# タイトル`（H1） | （body には入れない） | Notion ページの `投稿の原稿` (title) プロパティに設定 |
+| `## 見出し` | `heading_2` | note.com の「大見出し」に対応 |
+| `### 中見出し` | `heading_3` | note.com の「中見出し」に対応 |
+| 通常段落（1 行で完結） | `paragraph` | `\n` を含まない 1 行を 1 ブロック |
+| 空行 | （ブロック区切り） | paragraph ブロックの境界として機能 |
+| `- 項目` | `bulleted_list_item` | 1 行 = 1 ブロック |
+| `> 引用` | `quote` | 連続行は 1 つの quote にまとめる |
+| `────────` または `---` | `divider` | 水平線 |
+| `**強調**` | rich_text の `annotations.bold = true` | 段落・見出し・箇条書きすべての rich_text に適用 |
+
+### rich_text 構築ルール
+
+paragraph / heading / bulleted_list_item の `rich_text` 配列は以下の規則で構築する:
+
+- `**太字**` の前後を分割し、太字部分には `annotations: {"bold": true}` を付ける
+- 太字以外のセグメントは annotations なしのプレーンテキスト
+- 1 segment あたり最大 1900 文字（Notion API の 2000 char 上限に対する安全マージン）
+- segment 数の上限は実質ない（Notion API 側で 100 segments まで許容）
+
+例: `「**1.5g/kg**」という条件や。**70kg** の男性なら **105g**。`
+
+→
+```json
+{
+  "type": "paragraph",
+  "paragraph": {
+    "rich_text": [
+      {"type": "text", "text": {"content": "「"}},
+      {"type": "text", "text": {"content": "1.5g/kg"}, "annotations": {"bold": true}},
+      {"type": "text", "text": {"content": "」という条件や。"}},
+      {"type": "text", "text": {"content": "70kg"}, "annotations": {"bold": true}},
+      {"type": "text", "text": {"content": " の男性なら "}},
+      {"type": "text", "text": {"content": "105g"}, "annotations": {"bold": true}},
+      {"type": "text", "text": {"content": "。"}}
+    ]
+  }
+}
+```
+
+### 変換スクリプト
+
+リファレンス実装は `scripts/md_to_notion_blocks.py` に置く。Phase 4 で Notion 保存する前に、03_note.md → blocks JSON に変換して `mcp__notion__API-post-page` の `children` に渡す流れ。
+
+呼び出し例:
+```bash
+python3 bb-note-threads/scripts/md_to_notion_blocks.py output/<ts>/03_note.md > /tmp/note_blocks.json
+```
+
+### 「note.com 想定」の見出しランクガイド
+
+writer は以下の対応で見出しを書く:
+
+- `## 結論` / `## 本論セクション名` / `## まとめ` / `## もっと深く知りたいなら` / `## 脚注` → 大見出し（H2）
+- 長い本論セクション内のサブ区切り（`### 軽量帯` / `### 中量帯` / `### 重量帯` 等）→ 中見出し（H3）
+
+Threads セクションには見出しを使わず、平段落で構成する（既存仕様維持）。
