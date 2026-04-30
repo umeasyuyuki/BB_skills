@@ -41,15 +41,15 @@ description: 調査・評価チェック・台本などの投稿ドキュメン�
 - `funnel_stage`（`awareness` / `engagement` / `community`）— 動線分析用
 - `paired_post_url`（URL）— Threads ⇔ Note の相互リンク
 
-## コマンド
+## 呼び出し方
 
-- `/package-create` : ドキュメントから保存パッケージJSONを作成
-- `/package-save-notion` : JSONをNotionへ保存
-- `/notion-target` : 保存先Notion DB/Data Sourceを固定設定
-- `/notion-publish` : 1コマンドで保存（JSON/Markdown対応、台本セクションは自動承認）
-- `/notion-dry-run` : 保存前検証
-- `/notion-save-json` : 単体保存
-- `/notion-autosave-inbox` : inbox一括保存
+このスキルは **オーケストレーター（contents-fullmake / bb-note-threads）から内部呼び出し** される。独立したスラッシュコマンドは持たない。Phase 4 の Notion 保存ゲートとして自動実行される。
+
+設定変更が必要な場合のみ、内部スクリプトを直接呼び出す:
+
+- `scripts/notion_target.py` : 保存先 Notion DB/Data Source を固定設定
+- `scripts/notion_save_document.py` : 単体保存（デバッグ時）
+- `scripts/notion_autosave.py` : inbox 一括保存（バッチ運用時）
 
 ## 依存スクリプト
 
@@ -89,9 +89,10 @@ description: 調査・評価チェック・台本などの投稿ドキュメン�
 
 | 台本のサイズ | Notion ブロックタイプ / 装飾 |
 |---|---|
-| 大 | `heading_3` + `bold: true` |
-| 中 | `paragraph`（通常テキスト） |
-| 小 | `paragraph` + `color: "gray"` |
+| 中 | `heading_3` + `bold: true`（見出し・結論・数値・本文の主要部分） |
+| 小 | `paragraph` + `color: "gray"`（補足・注釈） |
+
+★旧「大」サイズは廃止。台本側でも slide-renderer 側でも「中」「小」の 2 種類のみ受け付ける。
 
 ### レイヤーヘッダー自体の表示
 

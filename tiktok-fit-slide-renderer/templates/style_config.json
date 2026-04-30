@@ -6,11 +6,6 @@
     "margin": 80
   },
   "size_map": {
-    "大": {
-      "pointsize": 130,
-      "weight": "Black",
-      "line_spacing": 30
-    },
     "中": {
       "pointsize": 80,
       "weight": "Bold",

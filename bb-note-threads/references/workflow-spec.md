@@ -3,8 +3,6 @@
 ## 入力
 
 - 必須: `title`（タイトル文字列、13〜30 字推奨、超過は警告のみ）
-- 任意: `--no-competitor`（競合分析を省略する軽量モードフラグ）
-
 タイトル評価フローは持たない（投入されたタイトルをそのまま採用）。
 
 ## カテゴリ判定（L1 誘導文の参考プール選択用）
@@ -21,30 +19,24 @@ contents-fullmake と同じ 5 種を使う:
 
 カテゴリは Phase 0 でオーケストレーターが自動判定する（タイトル文字列のキーワードマッチング）。判定信頼度が低い場合（< 60%）はユーザーに確認する。
 
-## エージェントチーム実行フロー
+## エージェント実行フロー
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  オーケストレーター（メインエージェント）                  │
 │  タイトル受取 → カテゴリ判定 → Phase 1 起動                │
-└──────────────┬───────────────────────────────┬───────────┘
-               │ Phase 1（TeamCreate 並列チーム）│
-               ▼                                ▼
-┌──────────────────────┐     ┌──────────────────────────────┐
-│  researcher           │◄───►│  competitor-analyst           │
-│  tiktok-fit-research  │     │  tiktok-fit-post-competitor-  │
-│                       │     │  analysis                     │
-│  ・科学的根拠収集     │────►│  ・Threads/Note 競合の独自角度 │
-│  ・PubMed/公式データ  │◄────│  ・盲点発見 → 追加調査依頼     │
-└──────────┬───────────┘     └──────────────┬───────────────┘
-           │                                │
-           └───────────────┬────────────────┘
-                           ▼
-                ┌─────────────────────┐
-                │  結果マージ＆重複除去 │
-                └──────────┬──────────┘
-                           │ Phase 2（2メディア並列）
-                           ▼
+└──────────────┬───────────────────────────────────────────┘
+               │ Phase 1（researcher 単独）
+               ▼
+        ┌──────────────────────┐
+        │  researcher           │
+        │  tiktok-fit-research  │
+        │  ・科学的根拠収集     │
+        │  ・PubMed/公式データ  │
+        │  ・既存情報との差別化軸│
+        └──────────┬───────────┘
+                   │ Phase 2（2メディア並列）
+                   ▼
               ┌──────────────┬──────────────┐
               │ threads-writer│  note-writer  │
               └──────┬───────┴──────┬───────┘
@@ -62,6 +54,8 @@ contents-fullmake と同じ 5 種を使う:
                   │ + paired_post_url │
                   └──────────────────┘
 ```
+
+旧 competitor-analyst は廃止（差別化軸の抽出は researcher の調査範囲に統合）。
 
 ---
 
@@ -88,50 +82,30 @@ contents-fullmake と同じ 5 種を使う:
 
 ---
 
-## Phase 1: 並列調査（research + competitor-analysis）
+## Phase 1: リサーチ（researcher 単独）
 
 ### 起動
 
 ```
-TeamCreate({team_name: "bb-note-threads-team"})
-→ Agent({name: "researcher", subagent_type: "Explore", team_name: "bb-note-threads-team", ...})
-→ Agent({name: "competitor-analyst", subagent_type: "Explore", team_name: "bb-note-threads-team", ...})
+Agent({name: "researcher", subagent_type: "Explore", ...})
 ```
-
-`--no-competitor` フラグ指定時は `competitor-analyst` を起動せず、`researcher` のみ実行する。
 
 ### researcher への指示テンプレ
 
 ```
-役割: タイトル「{title}」について、科学的根拠（PubMed・公式データ・査読論文）を収集する。
+役割: タイトル「{title}」について、科学的根拠と差別化軸を収集する。
 出力: Markdown形式のリサーチノート。
-  - 主要な作用機序 / 効果
+  ## 主要エビデンス
+  - 作用機序 / 効果
   - 引用文献 5-8 件（PubMed ID 必須）
   - 反対意見・批判的観点も含める
-  - サプリ・栄養テーマの場合は薬機法上の注意点を明記
-通信: 序盤で発見した「主要キーワード」「切り口」を SendMessage({to: "competitor-analyst"}) で共有すること。
+
+  ## 既存情報との差別化軸
+  - テーマで流通している主張・常識・通説 2-3 点
+  - それを覆す or 補強する独自角度
+
+  ## 薬機法注意点（サプリ・栄養テーマの場合）
 ```
-
-### competitor-analyst への指示テンプレ
-
-```
-役割: タイトル「{title}」と関連キーワードで、Threads / Note / YouTube の伸びている投稿を分析し、独自角度を抽出する。
-出力: Markdown形式の競合分析メモ。
-  - 既存の伸びている投稿の型 3-5 件（タイトル / 訴求 / KPI 推定）
-  - 既存投稿が未カバーの論点（差別化軸）
-  - BB の「情弱ビジネスを終わらせる」思想と整合する切り口
-通信: 盲点発見時は SendMessage({to: "researcher"}) で追加調査依頼を送ること。
-```
-
-### Phase 1 マージ仕様
-
-両エージェント完了後、オーケストレーターが以下を実行:
-
-1. 両エージェントの出力を受け取る
-2. リサーチ結果と競合分析結果のトピック対応関係を整理する
-3. 重複トピックを除去し、独自角度を明確にする
-4. マージ結果を Phase 2 の入力パッケージとして構成する
-5. `TeamDelete` でチームを解散する
 
 マージ結果のフォーマット:
 
@@ -142,11 +116,8 @@ TeamCreate({team_name: "bb-note-threads-team"})
 ## 主要エビデンス
 （researcher の出力から、引用付きで 5-8 件）
 
-## 既存競合の型
-（competitor-analyst の出力から、伸びている投稿の型 3-5 件）
-
 ## 独自角度
-（マージで導出された差別化軸）
+（researcher の出力から、既存情報との差別化軸）
 
 ## 薬機法注意点（該当時のみ）
 （researcher の出力から）
@@ -257,8 +228,7 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 
 | 発生箇所 | 動作 |
 |---|---|
-| Phase 1 で researcher / competitor-analyst が両方失敗 | 中断、ユーザーにエラー報告 |
-| Phase 1 で片方のみ失敗 | 残った成果物で続行、ユーザーに警告 |
+| Phase 1 で researcher が失敗 | 中断、ユーザーにエラー報告 |
 | Phase 2 で writer が失敗 | もう一方の writer 結果は保持、失敗側のみリトライ（最大 2 回） |
 | Phase 3 で Red 判定が 3 回続く | ユーザーに手動修正を依頼 |
 | Phase 4 で Notion 保存失敗 | ローカルファイル `output/<timestamp>/` にバックアップ保存、ユーザーに通知 |

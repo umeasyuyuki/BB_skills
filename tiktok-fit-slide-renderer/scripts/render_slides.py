@@ -108,7 +108,7 @@ def load_font(weight: str, pointsize: int, config: dict) -> ImageFont.FreeTypeFo
 # ──────────────────────────────────────────────
 
 LAYER_HEADER_PATTERN = re.compile(
-    r"^(メイン|サブ|補足)[・·](大|中|小)[・·](黒|赤|青|#[0-9A-Fa-f]{3,6})\s*$"
+    r"^(メイン|サブ|補足)[・·](中|小)[・·](黒|赤|青|#[0-9A-Fa-f]{3,6})\s*$"
 )
 
 
@@ -330,8 +330,12 @@ def validate_manifest(manifest: dict) -> tuple[list[str], list[str]]:
                 color = layer.get("color", "黒")
                 text = layer.get("text", "")
 
-                if size not in ("大", "中", "小"):
-                    errors.append(f"スライド{n}[{layer.get('layer')}]: size '{size}' 不正")
+                if size == "大":
+                    errors.append(
+                        f"スライド{n}[{layer.get('layer')}]: size '大' は廃止されました。'中' または '小' を使用してください"
+                    )
+                elif size not in ("中", "小"):
+                    errors.append(f"スライド{n}[{layer.get('layer')}]: size '{size}' 不正（'中' または '小'）")
                 if color not in ("黒", "赤", "青") and not color.startswith("#"):
                     errors.append(f"スライド{n}[{layer.get('layer')}]: color '{color}' 不正")
                 if not text.strip():

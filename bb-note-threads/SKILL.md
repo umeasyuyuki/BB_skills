@@ -32,18 +32,18 @@ LINE オープンチャット（コミュニティ化）
 - コンセプト: 筋トレ中・上級者向け。コンディショニングや努力を最大化するための栄養学・ヘルスケア情報。情弱ビジネスを終わらせる側
 - 対象: 20-40 代男性、筋トレ中級以上
 - 文章レベル: 高校生が理解できる日本語
-- 口調: 関西弁レベル 2（バランス型）。情熱が見える怒りをツッコミ系の関西弁で表現。事実で殴り、思想を叫ぶ。「〜やで」「〜ねん」「ほな」「せやから」等を自然に使う
+- 口調: **関西弁レベル 2 + お兄ちゃんノリのミックス**。「〜やねん」「〜なんやで」「〜やんな」のような関西弁兄貴ノリで、フィットネスの科学を楽しく届ける。怒りで殴らない、楽しさで届ける
 - 出力: Markdown × 2（Threads / Note）
 - 媒体差別化: Threads は要点・抽象・短文、Note は深掘り・SEO・長文
-- 関西弁の使い分け: Threads = 全文関西弁レベル 2 / Note = 地の文標準語 + 主張・体験談で関西弁ハイブリッド / L2-L4 固定文 = 標準語維持
+- 関西弁の使い分け: Threads = 全文関西弁兄貴ノリ / Note = 地の文標準語兄貴ノリ + 主張・体験談で関西弁兄貴ノリ / L2-L4 固定文 = 標準語維持
 
-## BB の思想
+## BB のチームと姿勢
 
-- 敵: 「知らない」につけ込んで金を抜く奴ら全員
-- 信念: 正しい情報はタダで届けられる。俺らが証明する
-- 姿勢: 京大院生と薬剤師が、論文と法律で殴る
-- 宣言: 「情弱ビジネスを、終わらせる。」
-- LINE OC コンセプト: 「日本最先端を本気で目指す、完全無料のフィットネス × ヘルスケアコミュニティ」
+- **チーム**: Brain Bulking — 京大院生と薬剤師が集まったチーム
+- **役割**: フィットネス・ヘルスケアの科学を、お兄ちゃんが教えてくれる感覚で届ける
+- **姿勢**: 論文・現場・ちょっとの想像力で、フィットネスを面白くする
+- **届け方**: 怒りで殴るんじゃなくて、知ったらちょっと得した気分になる科学を、楽しく
+- **LINE OC コンセプト**: 「日本最先端を本気で目指す、完全無料のフィットネス × ヘルスケアコミュニティ」
 
 ## 起動フロー
 
@@ -53,7 +53,6 @@ LINE オープンチャット（コミュニティ化）
 |---|---|
 | `/bb-note-threads` | 対話モード：タイトル質問 → フルフロー |
 | `/bb-note-threads "タイトル"` | タイトル即採用 → フルフロー |
-| `/bb-note-threads "タイトル" --no-competitor` | 競合分析を省略する軽量モード |
 
 カテゴリは 5 種：compare / ingredient / entertainment / debunk / discovery（contents-fullmake と共通、L1 誘導文の参考プール選択に使う）
 
@@ -71,22 +70,13 @@ LINE オープンチャット（コミュニティ化）
 
 ---
 
-## Phase 1: 並列調査（research + competitor-analysis）
+## Phase 1: リサーチ（researcher 単独）
 
-`TeamCreate({team_name: "bb-note-threads-team"})` でチームを作成し、以下 2 エージェントを `team_name` 指定で同時起動する。`SendMessage` による双方向通信を有効化する。
+`tiktok-fit-research` を `researcher` エージェントとして起動し、科学的根拠・PubMed・公式データを収集する。差別化軸の抽出も researcher の調査範囲に統合（旧 competitor-analyst は廃止）。
 
 | name | 担当スキル | 役割 |
 |---|---|---|
-| `researcher` | `tiktok-fit-research` | 科学的根拠・PubMed・公式データの収集 |
-| `competitor-analyst` | `tiktok-fit-post-competitor-analysis` | Threads / Note / YouTube の競合投稿分析 |
-
-通信ルール:
-
-1. **researcher → competitor-analyst**（早期共有）: 主要キーワードと発見した切り口を `SendMessage({to: "competitor-analyst"})` で共有
-2. **competitor-analyst → researcher**（差別化リクエスト）: 盲点発見時に追加調査依頼
-3. **合流**: 両エージェント完了後、オーケストレーターが結果をマージ → `TeamDelete` でチーム解散
-
-`--no-competitor` フラグ指定時は competitor-analyst を起動せず、researcher 単体実行とする。
+| `researcher` | `tiktok-fit-research` | 科学的根拠 + 既存情報との差別化軸抽出 |
 
 詳細: `references/workflow-spec.md` の「Phase 1」参照
 
@@ -176,7 +166,7 @@ writer エージェントは出力前に `references/quality-gates.md` の 12 �
 
 ## エラー時の挙動
 
-- Phase 1 で researcher / competitor-analyst が両方失敗した場合: 中断、ユーザーにエラー報告
+- Phase 1 で researcher が失敗した場合: 中断、ユーザーにエラー報告
 - Phase 2 で writer が失敗した場合: もう一方の writer 結果は保持、失敗側のみリトライ
 - Phase 3 で Red 判定が 2 回続いた場合: ユーザーに手動修正を依頼
 - Phase 4 で Notion 保存失敗時: ローカルファイルに `output/<timestamp>/` でバックアップ保存
