@@ -1,0 +1,6 @@
+interface:
+  display_name: "TikTok Speed"
+  short_description: "TikTokカルーセル投稿の高速制作。タイトル、6〜7枚台本、GPT画像生成用プロンプト、まとめ表、キャプションを作る"
+  default_prompt: "Use $tiktok-speed to produce the fast TikTok carousel package and return Japanese Markdown output."
+policy:
+  allow_implicit_invocation: true
