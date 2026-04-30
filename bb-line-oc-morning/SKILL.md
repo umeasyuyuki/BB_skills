@@ -44,13 +44,16 @@ Notion「投稿管理」DB に7投稿保存
 
 ## 起動フロー
 
-| 呼び出し方 | 動作 |
-|---|---|
-| `/bb-line-oc-morning` | フルフロー実行（手動） |
-| `/bb-line-oc-morning --dry-run` | Notion 保存をスキップして標準出力のみ |
-| `/bb-line-oc-morning --skip-research` | 直近のリサーチ結果を再利用 |
+引数の有無で2モードに分岐する。
 
-cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
+| 呼び出し方 | モード | 生成本数 |
+|---|---|---:|
+| `/bb-line-oc-morning` | 通常モード（毎朝7本） | 7 |
+| `/bb-line-oc-morning "テーマ文字列"` | **テーマ指定モード**（深掘り1本） | 1 |
+| 上記＋`--dry-run` | Notion 保存スキップ、標準出力のみ | — |
+| 上記＋`--skip-research` | 直近のリサーチ結果を再利用 | — |
+
+cron 実行時は引数なし（通常モード）固定。テーマ指定モードは手動オンリー。
 
 ---
 
@@ -67,7 +70,9 @@ cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
 
 ---
 
-## Phase 1: 並列リサーチ（3エージェント）
+## Phase 1: リサーチ（モード別分岐）
+
+### 通常モード: 並列リサーチ（3エージェント）
 
 `TeamCreate({team_name: "bb-line-oc-research"})` でチームを作成し、以下3エージェントを並列起動する。
 
@@ -78,6 +83,10 @@ cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
 | `indirect-news` | 間接ニュース（Bloomberg / 日経ヘルスケア：原料相場・サプライチェーン・規制改正） | 1 |
 
 各エージェントには **Phase 0 で取得した重複候補リスト**を渡し、類似テーマを除外させる。
+
+### テーマ指定モード: 単一エージェント深掘り
+
+引数にテーマ文字列が渡された場合は `theme-researcher` 1エージェントのみ起動。検索5〜6ラウンド（通常より深め）、カテゴリ自動判定（tips / news-direct / news-indirect）、出力1本、重複は警告のみで継続。詳細プロンプト・判定ロジック: `references/workflow-spec.md` の「Phase 1: テーマ指定モード」。
 
 ソース優先順位とクエリパターンの詳細: `references/source-priority.md`
 
@@ -98,9 +107,9 @@ cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
 
 ---
 
-## Phase 2: LINE フォーマッタ（7投稿一括生成）
+## Phase 2: LINE フォーマッタ
 
-3エージェントから返った計7候補を LINE コピペ最適化フォーマットに整形する。
+Phase 1 の候補（通常モード=7、テーマ指定モード=1）を LINE コピペ最適化フォーマットに整形する。
 
 ### フォーマット骨格（全7投稿共通）
 
@@ -147,9 +156,9 @@ cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
 
 ---
 
-## Phase 4: Notion 保存（7ページ一括）
+## Phase 4: Notion 保存
 
-`mcp__notion__API-post-page` で直接7ページを並列作成（DB が3プロパティのみで軽量）。
+`mcp__notion__API-post-page` で1〜7ページを並列作成（通常モード=7並列、テーマ指定モード=1）。
 
 | 保存先 | 値 |
 |---|---|
@@ -178,15 +187,7 @@ cron 実行時（Phase B 自動運用時）は引数なしと同じ動作。
 
 ## 自動実行（Phase B）
 
-cron は `/schedule` スキル経由で登録する。初週は手動運用で品質を確認後、以下で cron 化:
-
-```
-schedule: "30 5 * * *"   # 毎朝 5:30 JST
-command: /bb-line-oc-morning
-timezone: Asia/Tokyo
-```
-
-cron 失敗時は ScheduleWakeup でリトライ、最終的にユーザーに通知。
+`/schedule "30 5 * * *" /bb-line-oc-morning`（JST、引数なし＝通常モード固定）。初週は手動運用で品質確認後に cron 化。失敗時は ScheduleWakeup でリトライ、連続失敗でユーザー通知。
 
 ---
 
