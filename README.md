@@ -62,6 +62,16 @@ Claude Code を開いて、以下のコマンドを入力するだけです。
 
 ---
 
+### Substack記事を書く
+
+```
+/substack-fit-writer
+```
+
+実行すると、文章タイプ（Note / memo / 記事 / full set）とテーマを順番に聞いてきます。Substack向けに、煽りではなく信頼・学び・人間味で読まれる文章を作ります。
+
+---
+
 ### 台本だけ作る（素材がすでにある場合）
 
 ```
@@ -78,6 +88,7 @@ Claude Code を開いて、以下のコマンドを入力するだけです。
 | スキル名 | 役割 |
 |---|---|
 | **contents-fullmake** | **入口。テーマ1つで3メディア全生成+画像化** |
+| substack-fit-writer | Substack向け。Note / memo / 記事を対話形式で作成 |
 | tiktok-fit-research | 科学的根拠・論文の調査 |
 | tiktok-fit-post-competitor-analysis | 競合投稿の分析 |
 | tiktok-fit-carousel-script | 台本生成（本体） |
