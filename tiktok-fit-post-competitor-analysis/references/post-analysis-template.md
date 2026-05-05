@@ -56,6 +56,6 @@
 
 threads / note を platform 指定して呼ばれた場合、以下を必ず出力する:
 
-- **threads_specific**: Threads 特有の差別化ポイント（500-700 字内での要点凝縮、Note 誘導の自然さ、LINE OC 誘導の埋め込み位置）
+- **threads_specific**: Threads 特有の差別化ポイント（500-700 字内での要点凝縮、Note 案内の自然さ、LINE 直誘導を避けた構成）
 - **note_specific**: Note 特有の差別化ポイント（SEO 見出し設計、脚注密度、有料化への耐性）
 - **cross_funnel**: Threads → Note の動線で、競合がやっていない補強ポイント

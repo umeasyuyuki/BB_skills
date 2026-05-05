@@ -7,11 +7,11 @@
 
 タイトル評価フローは持たない（投入されたタイトルをそのまま採用）。
 
-## カテゴリ判定（L1 誘導文の参考プール選択用）
+## カテゴリ判定（切り口調整用）
 
 contents-fullmake と同じ 5 種を使う:
 
-| カテゴリ | コード名 | 例 | L1 誘導文の方向性 |
+| カテゴリ | コード名 | 例 | Threads / Note の方向性 |
 |---|---|---|---|
 | 比較系 | `compare` | プロテイン A vs B | コスパ・選択判断 |
 | 誤認訂正系 | `debunk` | よくある勘違い | 古い常識のアップデート |
@@ -171,15 +171,13 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 役割: タイトル「{title}」に基づき、Threads 投稿（500-700字）を生成する。
 入力: Phase 1 マージ結果（タイトル、カテゴリ、エビデンス、独自角度）
 文体ガイド: references/threads-style.md
-出力構造: references/output-spec.md の「Threads 末尾構造」に厳密に従うこと。
+出力構造: references/output-spec.md の「Threads 投稿」に厳密に従うこと。
 
 必須要素:
-- 本文（要点・抽象、Note への興味を引く）
-- Note URL プレースホルダ（【★Note URL を貼る★】）
-- L1 テーマ連動フック（references/line-oc-templates.md の参考プールを基にして、記事ごとに新規生成）
-- L2-L4 固定文（references/line-oc-templates.md の固定文を一字一句変えない）
-- LINE OC URL: https://line.me/ti/g2/lmmjCh0V39BIgClQxQmsm4Hb-G8Hb7VFsnVOuw（完成形で直書き）
-- チャット名「サイエンスベースフィットネス@Brain Bulking」を末尾に明記
+- 本文（要点・抽象、Note への興味を引く、標準語 BB トーン）
+- 最終リプは温かく、ゆるい Note 案内のみ（references/line-oc-templates.md の「Threads 最終リプ」参照）
+- Note URL プレースホルダ（`【★Note URL を貼る★】`）
+- Threads 全体に `line.me`、`LINEオープンチャット`、`完全無料`、`日本最先端`、`ステータス`、`👇` を入れない
 
 セルフチェック: 出力前に references/quality-gates.md の 12 項目を必ず実行すること。
 ```
@@ -196,10 +194,12 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 - 導入（手紙トーン、読者の課題を言語化）
 - 本論 3-5 セクション（H2 見出し、各セクション 400-700 字）
 - まとめ（結論を 3 行以内で言い切る）
-- LINE OC 誘導フル版（L1 連動 + L2-L4 固定、references/line-oc-templates.md 参照）
+- 関連リンク案内（references/line-oc-templates.md の「Note 末尾構造」参照、見出しは `## 関連リンク` で固定）
+- `【★プロフィールリンク / 公式リンク集 URL を貼る★】` プレースホルダ
+- 「個別の医療相談や診断をする場所ではありません。」の免責
 - 脚注 5-8 件（PubMed ID または公式情報源）
 
-セルフチェック: 出力前に references/quality-gates.md の 12 項目を必ず実行すること。
+セルフチェック: 出力前に references/quality-gates.md の全項目を必ず実行すること。関西弁が混入していないことを E-1〜E-7 で確認。
 ```
 
 ---

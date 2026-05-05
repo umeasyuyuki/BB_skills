@@ -1,6 +1,6 @@
 ---
 name: bb-note-threads
-description: BB（Brain Bulking）専用のテキスト媒体オーケストレーター。タイトル投入1つで、Threads投稿（要点・抽象）とNote記事（深掘り）を並列生成し、LINEオープンチャットへの誘導文付きでNotion保存まで完結。TikTokカルーセルとは独立した「Threads → Note → LINE OC」動線を作るためのスキル。
+description: BB（Brain Bulking）専用のテキスト媒体オーケストレーター。タイトル投入1つで、Threads投稿（要点・抽象）とNote記事（深掘り）を並列生成し、ThreadsからNoteへ自然に案内し、Note末尾でプロフィールリンク / 公式リンク集へ温かくつなぐ。TikTokカルーセルとは独立した「Threads → Note → 公式リンク集」動線を作るためのスキル。
 ---
 
 <!--
@@ -14,7 +14,7 @@ description: BB（Brain Bulking）専用のテキスト媒体オーケストレ�
 
 ## 概要
 
-タイトル文字列1つを入口に、Threads投稿とNote記事を並列生成し、両方にLINEオープンチャットへの誘導を埋め込んでNotion保存する。TikTokカルーセル生成（contents-fullmake）とは完全に独立した、テキスト媒体専用の動線を構築するためのスキル。
+タイトル文字列1つを入口に、Threads投稿とNote記事を並列生成し、ThreadsではNoteへの自然な案内だけを置き、Note末尾でプロフィールリンク / 公式リンク集へ温かくつなぐ。TikTokカルーセル生成（contents-fullmake）とは完全に独立した、テキスト媒体専用の動線を構築するためのスキル。
 
 動線設計:
 
@@ -22,20 +22,20 @@ description: BB（Brain Bulking）専用のテキスト媒体オーケストレ�
 Threads（要点・抽象、500-700字）
    ↓ Note URL リンク
 Note（深掘り、2500-3500字）
-   ↓ LINE OC URL + 「なぜ最新トレンドが必要か」
-LINE オープンチャット（コミュニティ化）
+   ↓ プロフィールリンク / 公式リンク集
+公式HP・TikTok・他Note・LINEオープンチャット（選択肢の1つ）
 ```
 
 ## 固定プロファイル
 
-- KPI: Threads エンゲージメント率、Note への遷移率、LINE OC 加入数
+- KPI: Threads エンゲージメント率、Note への遷移率、プロフィールリンククリック率、LINE OC 加入数
 - コンセプト: 筋トレ中・上級者向け。コンディショニングや努力を最大化するための栄養学・ヘルスケア情報。情弱ビジネスを終わらせる側
 - 対象: 20-40 代男性、筋トレ中級以上
 - 文章レベル: 高校生が理解できる日本語
-- 口調: 関西弁レベル 2（バランス型）。情熱が見える怒りをツッコミ系の関西弁で表現。事実で殴り、思想を叫ぶ。「〜やで」「〜ねん」「ほな」「せやから」等を自然に使う
+- 口調: **標準語**で統一。断定・体言止め可。情熱は事実で語る。AI っぽい曖昧表現・抽象語は禁止（旧仕様の関西弁レベル 2 は廃止）
 - 出力: Markdown × 2（Threads / Note）
 - 媒体差別化: Threads は要点・抽象・短文、Note は深掘り・SEO・長文
-- 関西弁の使い分け: Threads = 全文関西弁レベル 2 / Note = 地の文標準語 + 主張・体験談で関西弁ハイブリッド / L2-L4 固定文 = 標準語維持
+- トーンの使い分け: Threads / Note 本文 = 標準語 BB トーン（断定・体言止め・思想を叫ぶ）/ Threads 最終リプ = 温かく、ゆるい Note 案内 / Note 末尾 = 関連リンク案内（押し付けない・医療相談に見せない）
 
 ## BB の思想
 
@@ -43,7 +43,7 @@ LINE オープンチャット（コミュニティ化）
 - 信念: 正しい情報はタダで届けられる。俺らが証明する
 - 姿勢: 京大院生と薬剤師が、論文と法律で殴る
 - 宣言: 「情弱ビジネスを、終わらせる。」
-- LINE OC コンセプト: 「日本最先端を本気で目指す、完全無料のフィットネス × ヘルスケアコミュニティ」
+- コミュニティ位置づけ: LINE オープンチャットはプロフィールリンク / 公式リンク集内の選択肢の 1 つ。Threads では直接案内しない
 
 ## 起動フロー
 
@@ -55,7 +55,7 @@ LINE オープンチャット（コミュニティ化）
 | `/bb-note-threads "タイトル"` | タイトル即採用 → フルフロー |
 | `/bb-note-threads "タイトル" --no-competitor` | 競合分析を省略する軽量モード |
 
-カテゴリは 5 種：compare / ingredient / entertainment / debunk / discovery（contents-fullmake と共通、L1 誘導文の参考プール選択に使う）
+カテゴリは 5 種：compare / ingredient / entertainment / debunk / discovery（contents-fullmake と共通、Note案内リプやNote本文の切り口調整に使う）
 
 ## Phase 0: タイトル受領
 
@@ -64,7 +64,7 @@ LINE オープンチャット（コミュニティ化）
 サブステップ:
 
 1. タイトル文字数チェック（13〜30字推奨、超過時は警告のみ）
-2. テーマカテゴリ自動判定（5 種）→ L1 誘導文の参考プール選択に使用
+2. テーマカテゴリ自動判定（5 種）→ Threads / Note の切り口調整に使用
 3. 確定タイトルとカテゴリを Phase 1 / Phase 2 に渡す
 
 詳細: `references/workflow-spec.md` の「Phase 0」参照
@@ -105,21 +105,20 @@ Phase 1 のマージ済みリサーチを入力に、Threads 投稿と Note 記�
 
 Threads は **親ポスト + リプライ複数** のツリー構造で出力する。型ごとにツリー深さが決まっている。
 
-| 型 | 親 | 本体リプ | 誘導リプ | 合計 |
+| 型 | 親 | 本体リプ | Note案内リプ | 合計 |
 |---|---:|---:|---:|---:|
 | ⚪選系 / ランキング系 | 1 | 1 | 1 | 3 |
 | 体験談型 / 対比型 | 1 | 2 | 1 | 4 |
 
-各ポスト 200-300 字。誘導リプ（最終）に LINE OC URL と Note URL を併記する。本体ポストには URL を入れない。
+本体ポスト（親 + 本体リプ）は 200-300 字、**Note案内リプは 100-180 字**。最終リプに Note URL プレースホルダだけを置き、LINE / プロフィールリンク / 公式リンク集への誘導は Threads には書かない。
 
-### 両エージェント共通の必須要素（誘導リプ / Note 末尾に組み込む）
+### 両エージェント共通の必須要素（Threads 最終リプ / Note 末尾）
 
-- **L1 テーマ連動フック**（記事ごとに新規生成、`references/line-oc-templates.md` の参考プールを参照）
-- **L2 ポジショニング**（固定文）: 「京大院生と薬剤師が、日本最先端を本気で目指す、完全無料のフィットネス × ヘルスケアコミュニティ」
-- **L3 変化訴求**（固定文）: Threads 圧縮版「成分表を見て、体に必要なものを判断できるように。」/ Note 通常版「読んでいるだけで、成分表を見て体に必要なものを自分で判断できるレベルになる。」
-- **L4 ベネフィット + URL**（固定）: 「毎朝、最新ニュースを翻訳して配信中」+ LINE OC URL +「サイエンスベースフィットネス@Brain Bulking」
+- **Threads 最終リプ**: `references/line-oc-templates.md` の「Threads 最終リプ」を参照し、温かくゆるい Note 案内だけを書く
+- **Note 末尾**: `references/line-oc-templates.md` の「Note 末尾構造」を参照し、`## 関連リンク` 見出しでプロフィールリンク / 公式リンク集へ案内する
+- **健康系免責**: Note 末尾に「個別の医療相談や診断をする場所ではありません。」を入れる
 
-Threads 誘導リプには Note URL プレースホルダ（`【★Note URL を貼る★】`）も併記する。Note 公開後、Threads 投稿時に手動で URL 差し替え。
+Threads 最終リプには Note URL プレースホルダ（`【★Note URL を貼る★】`）を置く。Note 公開後、Threads 投稿時に手動で URL 差し替え。
 
 詳細: `references/output-spec.md` の「Threads 末尾構造」「Note 末尾構造」参照
 
@@ -158,18 +157,21 @@ Threads 誘導リプには Note URL プレースホルダ（`【★Note URL を�
 
 writer エージェントは出力前に `references/quality-gates.md` の 12 項目チェックリストを実行する。特に重要なのは:
 
-- L2-L4 が一字一句固定文と一致しているか
-- L1 が記事テーマと連動しており、コピペテンプレートになっていないか
-- LINE OC URL（`https://line.me/ti/g2/lmmjCh0V39BIgClQxQmsm4Hb-G8Hb7VFsnVOuw`）が完成形で直書きされているか
-- 「サイエンスベースフィットネス@Brain Bulking」がチャット名として明記されているか
-- AI っぽい曖昧表現（「ケースバイケース」「一概には」等）が混入していないか
+- Threads 全体に `line.me`、`LINEオープンチャット`、`完全無料`、`日本最先端`、`ステータス`、`👇` が混入していないか
+- Threads 最終リプが Note 案内だけになっているか
+- Note 末尾見出しが `## 関連リンク` になっているか
+- Note 末尾にプロフィールリンク / 公式リンク集プレースホルダがあるか
+- Note 末尾に医療相談・個別診断ではない旨があるか
+- AI っぽい曖昧表現（「ケースバイケース」「一概には」等）・抽象語（「最適化」「アプローチ」）が混入していないか
+- 関西弁の語尾（「〜やで」「〜ねん」「ほな」「せやから」「めっちゃ」「ほんま」等）が**全文を通じて**混入していないか
 
 ---
 
 ## TikTok との分離原則
 
 - **TikTok カルーセル**には LINE OC URL を**絶対に入れない**（contents-fullmake/references/line-oc.md と整合）
-- **本スキル（Threads / Note）**にだけ LINE OC URL を完成形で直書きする
+- **本スキルの Threads**にも LINE OC URL を入れない。Threads は Note URL のみ
+- **本スキルの Note**はプロフィールリンク / 公式リンク集へ案内し、その先で LINE OC を選択肢として見せる
 - TikTok 用台本生成が必要な場合は `contents-fullmake` を使う（こちらは TikTok カルーセル専用に縮退済み）
 
 ---
@@ -186,10 +188,10 @@ writer エージェントは出力前に `references/quality-gates.md` の 12 �
 ## 参考ファイル
 
 - `references/workflow-spec.md` — Phase 詳細・エージェント通信仕様
-- `references/kansai-tone.md` — **関西弁トーンガイド（共通、必読）**
+- `references/tone-guide.md` — **文体・トーンガイド（標準語ベース、共通、必読）**
 - `references/threads-style.md` — Threads 文体ガイド（ツリー構成・4 型）
-- `references/note-style.md` — Note 文体ガイド（ハイブリッド関西弁）
-- `references/line-oc-templates.md` — LINE OC 誘導文テンプレ（L1 参考プール + L2-L4 固定文）
+- `references/note-style.md` — Note 文体ガイド（標準語 BB トーン）
+- `references/line-oc-templates.md` — 関連リンク・コミュニティ案内テンプレ（Threads の Note 案内 + Note 末尾の温かいリンク案内）
 - `references/output-spec.md` — 出力フォーマット定義
 - `references/notion-publishing.md` — Notion 保存仕様
 - `references/quality-gates.md` — セルフチェック・薬機法ゲート

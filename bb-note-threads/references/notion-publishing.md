@@ -24,7 +24,7 @@
 
 ### 必須セクション
 
-- `sections.body`（投稿本文 500-700 字、L1-L4 全て含む完成形）
+- `sections.body`（投稿本文 500-700 字、最終リプの Note 案内まで含む完成形）
 - `sections.references`（根拠リンク 3-5 件）
 
 ### 必須プロパティ
@@ -47,7 +47,7 @@
 
 ### 必須セクション
 
-- `sections.body`（記事本文 2500-3500 字、L1-L4 含む完成形 + 脚注 5-8 件）
+- `sections.body`（記事本文 2500-3500 字、関連リンク案内 + 脚注 5-8 件）
 - `sections.references`（根拠リンク 5-8 件、PubMed ID 必須含む）
 
 ### 必須プロパティ
@@ -96,15 +96,15 @@ Step 4: Note ページの paired_post_url プロパティに URL_T を書き込�
 
 ## funnel_stage の運用
 
-Threads → Note → LINE OC の動線で、各記事がどの段階に位置するかを記録する。
+Threads → Note → 公式リンク集の動線で、各記事がどの段階に位置するかを記録する。
 
 | 値 | 意味 | 該当媒体 |
 |---|---|---|
 | `awareness` | 認知段階（要点・抽象） | Threads |
 | `engagement` | エンゲージメント段階（深掘り） | Note |
-| `community` | コミュニティ段階（双方向） | （LINE OC、保存対象外） |
+| `community` | コミュニティ段階（双方向） | （公式リンク集内のコミュニティ案内、保存対象外） |
 
-将来的に Threads → Note → LINE OC の遷移率を分析する際の軸として活用する。
+将来的に Threads → Note → 公式リンク集の遷移率を分析する際の軸として活用する。
 
 ---
 
@@ -203,7 +203,7 @@ paragraph / heading / bulleted_list_item の `rich_text` 配列は以下の規�
 - 1 segment あたり最大 1900 文字（Notion API の 2000 char 上限に対する安全マージン）
 - segment 数の上限は実質ない（Notion API 側で 100 segments まで許容）
 
-例: `「**1.5g/kg**」という条件や。**70kg** の男性なら **105g**。`
+例: `「**1.5g/kg**」という条件である。**70kg** の男性なら **105g**。`
 
 →
 ```json
@@ -213,7 +213,7 @@ paragraph / heading / bulleted_list_item の `rich_text` 配列は以下の規�
     "rich_text": [
       {"type": "text", "text": {"content": "「"}},
       {"type": "text", "text": {"content": "1.5g/kg"}, "annotations": {"bold": true}},
-      {"type": "text", "text": {"content": "」という条件や。"}},
+      {"type": "text", "text": {"content": "」という条件である。"}},
       {"type": "text", "text": {"content": "70kg"}, "annotations": {"bold": true}},
       {"type": "text", "text": {"content": " の男性なら "}},
       {"type": "text", "text": {"content": "105g"}, "annotations": {"bold": true}},
@@ -236,7 +236,7 @@ python3 bb-note-threads/scripts/md_to_notion_blocks.py output/<ts>/03_note.md > 
 
 writer は以下の対応で見出しを書く:
 
-- `## 結論` / `## 本論セクション名` / `## まとめ` / `## もっと深く知りたいなら` / `## 脚注` → 大見出し（H2）
+- `## 結論` / `## 本論セクション名` / `## まとめ` / `## 関連リンク` / `## 脚注` → 大見出し（H2）
 - 長い本論セクション内のサブ区切り（`### 軽量帯` / `### 中量帯` / `### 重量帯` 等）→ 中見出し（H3）
 
 Threads セクションには見出しを使わず、平段落で構成する（既存仕様維持）。
