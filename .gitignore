@@ -1,6 +1,16 @@
 .DS_Store
 *.log
 
+# 依存関係
+**/node_modules/
+**/.venv/
+.venv/
+
+# OS / editor
+.idea/
+.vscode/
+.claude/worktrees/
+
 # Notion設定（個人のDB IDが含まれるため除外）
 **/.notion-target.json
 
@@ -9,6 +19,15 @@
 
 # 画像出力（個人パスのため除外）
 **/output/
+**/outputs/
+**/dist/
+**/build/
+**/tmp/
+**/logs/
+*.mp4
+*.mov
+*.wav
+*.mp3
 
 # Pythonキャッシュ
 **/__pycache__/

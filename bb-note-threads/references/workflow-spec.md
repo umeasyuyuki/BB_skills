@@ -61,6 +61,12 @@ contents-fullmake と同じ 5 種を使う:
                   │ notion-publisher  │
                   │ + paired_post_url │
                   └──────────────────┘
+                           │ Phase 5（note.com 下書き）
+                           ▼
+                  ┌──────────────────┐
+                  │ note-mcp          │
+                  │ draft + preview   │
+                  └──────────────────┘
 ```
 
 ---
@@ -168,18 +174,31 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 ### threads-writer への指示テンプレ
 
 ```
-役割: タイトル「{title}」に基づき、Threads 投稿（500-700字）を生成する。
+役割: タイトル「{title}」に基づき、Threads 投稿（ツリー構成、本体 200-300 字 × N + 最終リプ 240-300 字）を生成する。
 入力: Phase 1 マージ結果（タイトル、カテゴリ、エビデンス、独自角度）
-文体ガイド: references/threads-style.md
+文体ガイド: references/threads-style.md / references/tone-guide.md / references/domain-vocabulary.md
 出力構造: references/output-spec.md の「Threads 投稿」に厳密に従うこと。
 
-必須要素:
-- 本文（要点・抽象、Note への興味を引く、標準語 BB トーン）
-- 最終リプは温かく、ゆるい Note 案内のみ（references/line-oc-templates.md の「Threads 最終リプ」参照）
-- Note URL プレースホルダ（`【★Note URL を貼る★】`）
-- Threads 全体に `line.me`、`LINEオープンチャット`、`完全無料`、`日本最先端`、`ステータス`、`👇` を入れない
+型選択（必須）:
+- references/threads-patterns.md の「カテゴリ × 型マッピング」を参照
+- 8 型から 2 案を提案し、フックの強い方を採用
+- 出力末尾に「採用案 / 不採用案 / 採用理由」を 1-2 行ずつ記載
 
-セルフチェック: 出力前に references/quality-gates.md の 12 項目を必ず実行すること。
+必須要素:
+- 本文（要点・抽象、Note への興味を引く、低温の標準語 BB トーン。`俺ら` / `俺たち` は原則使わない）
+- 最終リプは D-2 二段構成: Note 案内（メイン 100-150 字）+ 区切り（ーーー / 空行 2 行）+ LINE OC 匂わせ（サブ 100-150 字、references/cta-policy.md の「Threads 最終リプ」参照）
+- Note URL プレースホルダ（`【★Note URL を貼る★】`）を最終リプ メイン部分に配置
+- Threads 全体に `line.me`（直 URL）、`完全無料`、`日本最先端`、`ステータス`、`今すぐ参加`、`全員入って`、`👇` を入れない
+- LINE OC は最終リプ サブ部分のみで「プロフィールの相談室」表現で匂わせる（直 URL 禁止）
+
+専門用語翻訳（必須）:
+- references/domain-vocabulary.md の翻訳ルールを必ず読む
+- 学術略称（ACSM、PubMed、mEq/L、mOsm/L 等）は素のまま使わない
+- カタカナ専門語（アイソトニック、ハイポトニック、グリコーゲン、mTORC1、MPS 等）を日常語に翻訳
+- 数値・単位（%、mg、kcal、円、年）は無翻訳で残す
+- 論文著者名・PubMed ID は Threads では一切出さない
+
+セルフチェック: 出力前に references/quality-gates.md の全項目（A〜G、F は Note のみ）を必ず実行すること。
 ```
 
 ### note-writer への指示テンプレ
@@ -187,19 +206,27 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 ```
 役割: タイトル「{title}」に基づき、Note 記事（2500-3500字）を生成する。
 入力: Phase 1 マージ結果（タイトル、カテゴリ、エビデンス、独自角度）
-文体ガイド: references/note-style.md
+文体ガイド: references/note-style.md / references/tone-guide.md / references/domain-vocabulary.md
 出力構造: references/output-spec.md の「Note 末尾構造」に厳密に従うこと。
 
 必須要素:
 - 導入（手紙トーン、読者の課題を言語化）
 - 本論 3-5 セクション（H2 見出し、各セクション 400-700 字）
 - まとめ（結論を 3 行以内で言い切る）
-- 関連リンク案内（references/line-oc-templates.md の「Note 末尾構造」参照、見出しは `## 関連リンク` で固定）
-- `【★プロフィールリンク / 公式リンク集 URL を貼る★】` プレースホルダ
+- 関連リンク案内（references/cta-policy.md の「Note 末尾構造」参照、見出しは `## 関連リンク` で固定）
+- LINE オープンチャット言及（公式OC名 + 実リンク、Threads では直 URL 禁止）
 - 「個別の医療相談や診断をする場所ではありません。」の免責
 - 脚注 5-8 件（PubMed ID または公式情報源）
 
-セルフチェック: 出力前に references/quality-gates.md の全項目を必ず実行すること。関西弁が混入していないことを E-1〜E-7 で確認。
+専門用語翻訳（必須）:
+- references/domain-vocabulary.md の翻訳ルールを必ず読む
+- 学術略称（ACSM、PubMed 等）は本文で日常語に翻訳、原語は脚注のみ
+- カタカナ専門語（アイソトニック、ハイポトニック、グリコーゲン、mTORC1、MPS 等）を本文で日常語に翻訳
+- 単位（mEq/L、mOsm/L 等）を本文で mg/L、g/L、「液体の濃さ」等に変換、原単位は脚注のみ
+- 論文著者名（Parr et al. 等）は本文では「ある研究では〜」と書き、著者名・PubMed ID は脚注のみ
+- 数値・単位（%、mg、g、kcal、円、年）は無翻訳で残す
+
+セルフチェック: 出力前に references/quality-gates.md の全項目を必ず実行すること。関西弁が混入していないことを E-1〜E-7、専門用語翻訳を G-1〜G-6 で確認。
 ```
 
 ---
@@ -253,6 +280,25 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 
 ---
 
+## Phase 5: note.com 下書き保存
+
+Notion 保存後、確定した Note 記事を note.com の下書きへ保存する。詳細は `note-com-publishing.md` 参照。
+
+### 保存順序
+
+1. Note 記事から note.com 投入用 Markdown を作る
+2. 導入直後の `[TOC]` が単独行になっていることを確認する
+3. 管理メタ情報とセルフチェック結果を削除する
+4. `note_check_auth` で認証状態を確認する
+5. 未認証なら `note_import_chrome_cookies(browser="chrome", profile="Profile 4", verify=true)` で `brain_bulking` の Chrome Cookie を取り込む
+6. `note_create_draft` で下書き保存する
+7. `note_get_preview_url` で preview URL を取得する
+8. article key / preview URL / Notion Note URL を出力する
+
+公開はこの Phase では行わない。`note_publish_article` はユーザーが「公開して」と明示した場合だけ使用する。
+
+---
+
 ## エラー処理
 
 | 発生箇所 | 動作 |
@@ -262,6 +308,7 @@ Agent({name: "note-writer", subagent_type: "general-purpose", ...})
 | Phase 2 で writer が失敗 | もう一方の writer 結果は保持、失敗側のみリトライ（最大 2 回） |
 | Phase 3 で Red 判定が 3 回続く | ユーザーに手動修正を依頼 |
 | Phase 4 で Notion 保存失敗 | ローカルファイル `output/<timestamp>/` にバックアップ保存、ユーザーに通知 |
+| Phase 5 で note.com 下書き保存失敗 | Notion URL とローカルバックアップを返し、note-mcp 登録状態または Chrome の note.com ログイン状態を確認 |
 
 ---
 
@@ -274,7 +321,8 @@ output/
     ├── threads.md
     ├── note.md
     ├── compliance-report.md
-    └── notion-pages.json   # 保存済みページ URL を記録
+    ├── notion-pages.json   # 保存済みページ URL を記録
+    └── note-com-draft.json # note.com article key / preview URL を記録
 ```
 
 環境変数 `BB_NOTE_THREADS_OUTPUT_DIR` で出力先を上書き可能（既定値は worktree 直下の `output/`）。

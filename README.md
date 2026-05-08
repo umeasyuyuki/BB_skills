@@ -1,121 +1,55 @@
 # BB_skills
 
-Brain Bulking の TikTok フィード投稿を自動生成する Claude Code スキル集です。
-テーマを入力するだけで、台本・キャプション・まとめ表・根拠リンクまで一気に出力します。
+Brain Bulking の現役 Claude Code skill だけを置く軽量リポジトリです。
 
----
+現在残す skill は次の3つに絞っています。
 
-## 必要なもの
+| Skill | 役割 |
+|---|---|
+| `tiktok-speed` | TikTok向けの高速制作。タイトル案、6〜7枚台本、画像生成プロンプト、まとめ表、キャプションを作る |
+| `bb-note-threads` | Note記事とThreads投稿の制作・展開 |
+| `substack-fit-writer` | Substack向け。Note / memo / 記事 / full set を作る |
 
-- Mac または Windows
-- [Claude Code](https://claude.ai/code) がインストール済みであること
-- Python 3.10 以上（画像生成を使う場合）
-
----
-
-## セットアップ（初回のみ）
-
-### 1. このリポジトリをダウンロードする
-
-ターミナルを開いて、以下のコマンドを貼り付けて実行してください。
+## セットアップ
 
 ```bash
-cd ~/Projects && git clone https://github.com/umeasyuyuki/BB_skills.git
+cd /Users/asyuyukiume/Projects/BB_skills
+chmod +x setup.sh
+./setup.sh
 ```
 
-> ターミナルの開き方: `Cmd + Space` → `ターミナル` と入力 → Enter
-
-### 2. セットアップスクリプトを実行する
-
-```bash
-cd ~/Projects/BB_skills && chmod +x setup.sh && ./setup.sh
-```
-
-「セットアップ完了！」と表示されたら成功です。
-
-### 3. Claude Code を再起動する
-
-アプリを一度終了して、再度起動してください。
-
----
+`~/.claude/skills` に上記3skillだけを symlink 登録します。過去にこのリポジトリから登録した旧skillがあれば、`setup.sh` が解除します。
 
 ## 使い方
 
-Claude Code を開いて、以下のコマンドを入力するだけです。
+### TikTok高速版
 
-### フルフロー（リサーチ → 台本・Note・X → 薬機法チェック → Notion保存 → 画像生成）
-
-```
-/contents-fullmake
+```text
+/tiktok-speed テーマ
 ```
 
-実行すると、カテゴリとテーマを順番に聞いてきます。TikTokカルーセル台本+画像、Note記事、X投稿を1コマンドで全部作れます。
+### Note / Threads
 
-**カテゴリ一覧:**
-
-| カテゴリ | 内容 | 例 |
-|---|---|---|
-| 比較系 | 〇〇 vs 〇〇 | ホエイ vs カゼイン |
-| 成分解説系 | 食品・サプリの成分 | アシュワガンダ、牛乳 |
-| エンタメ系 | 固有名詞×フィットネス科学 | ラランド西田の食生活を科学した |
-| 誤認訂正系 | 世間の間違いを正す | プロテインは腎臓を悪くする |
-
----
-
-### Substack記事を書く
-
+```text
+/bb-note-threads
 ```
+
+`note-mcp` が登録済みで認証済みの場合、Note記事は Notion 保存後に note.com の下書きへ自動保存します。記事本文の導入直後に `[TOC]` を入れ、note.com 側で H2/H3 から目次を自動生成します。
+
+公開は自動では行いません。ユーザーが明示的に「公開して」と指示した場合だけ公開します。
+
+### Substack
+
+```text
 /substack-fit-writer
 ```
 
-実行すると、文章タイプ（Note / memo / 記事 / full set）とテーマを順番に聞いてきます。Substack向けに、煽りではなく信頼・学び・人間味で読まれる文章を作ります。
+## 運用方針
 
----
+Brain Bulking の戦略・進捗・投稿ログ・Substack運用方針の正本は、Obsidian vault 側に集約します。
 
-### 台本だけ作る（素材がすでにある場合）
-
-```
-/script-compare テーマ      # 比較系
-/script-ingredient テーマ   # 成分解説系
-/script-entertainment テーマ # エンタメ系
-/script-debunk テーマ       # 誤認訂正系
+```text
+/Users/asyuyukiume/Brain Bulking/BrainBulking
 ```
 
----
-
-## スキル一覧
-
-| スキル名 | 役割 |
-|---|---|
-| **contents-fullmake** | **入口。テーマ1つで3メディア全生成+画像化** |
-| substack-fit-writer | Substack向け。Note / memo / 記事を対話形式で作成 |
-| tiktok-fit-research | 科学的根拠・論文の調査 |
-| tiktok-fit-post-competitor-analysis | 競合投稿の分析 |
-| tiktok-fit-carousel-script | 台本生成（本体） |
-| tiktok-fit-compliance-check | 薬機法・表現チェック |
-| tiktok-fit-notion-publisher | Notion への保存 |
-| tiktok-fit-slide-renderer | カルーセルPNG画像の自動生成（Pillow） |
-| note-writer | Note記事の生成 |
-| tiktok-fit-trend-research | トレンド調査 |
-| tiktok-fit-insta-single | 1枚まとめ画像の生成 |
-| tiktok-fit-slide-image-generator | スライド画像の一括生成（AI） |
-| tiktok-fit-reel-renderer | リール動画のレンダリング |
-| tiktok-fit-skill-builder | 新スキルの設計 |
-| tiktok-notion-analyzer | TikTok 投稿の分析 |
-
----
-
-## Notion 連携について
-
-Notion への自動保存を使うには、Claude Code の MCP 設定に Notion Integration トークンを追加する必要があります。
-設定方法は別途共有します。
-
----
-
-## 更新する方法
-
-スキルが更新されたら、以下のコマンドで最新版に同期できます。
-
-```bash
-cd ~/Projects/BB_skills && git pull
-```
+このリポジトリは、実行用 skill の最小セットとして扱います。

@@ -1,10 +1,10 @@
 # bb-note-threads
 
-BB（Brain Bulking）専用のテキスト媒体オーケストレーター。タイトル投入 1 つで Threads 投稿と Note 記事を並列生成し、Threads から Note へ自然に案内し、Note 末尾でプロフィールリンク / 公式リンク集へ温かくつなぐ。
+BB（Brain Bulking）専用のテキスト媒体オーケストレーター。タイトル投入 1 つで Threads 投稿と Note 記事を並列生成し、Threads から Note へ自然に案内し、Note 末尾で公式 LINE オープンチャットへ温かくつなぐ。
 
 ## このスキルが解決する課題
 
-TikTok カルーセル生成（contents-fullmake）とは独立した「Threads → Note → 公式リンク集」の文字媒体動線を、ボタン 1 つで構築できる。3 メディア統合運用と切り離して、テキスト媒体だけで完結するワークフローを回したいときに使う。
+TikTok カルーセル生成（contents-fullmake）とは独立した「Threads → Note → LINE オープンチャット」の文字媒体動線を、ボタン 1 つで構築できる。3 メディア統合運用と切り離して、テキスト媒体だけで完結するワークフローを回したいときに使う。
 
 ## 動線設計
 
@@ -12,8 +12,8 @@ TikTok カルーセル生成（contents-fullmake）とは独立した「Threads 
 Threads（要点・抽象、500-700字）
    ↓ Note URL リンク
 Note（深掘り、2500-3500字）
-   ↓ プロフィールリンク / 公式リンク集
-公式HP・TikTok・他Note・LINEオープンチャット（選択肢の1つ）
+   ↓ Note末尾の公式リンク
+LINEオープンチャット「サイエンスベースフィットネス@Brain Bulking」
 ```
 
 ## 使い方
@@ -38,6 +38,7 @@ Note（深掘り、2500-3500字）
 | 2 | Threads + Note 並列生成 | ✅ | 3〜4 分 |
 | 3 | 薬機法チェック（両媒体並列） | ✅ | 30 秒 |
 | 4 | Notion 2 ページ保存 + 相互リンク | 直列 | 30 秒 |
+| 5 | note.com 下書き保存 | 直列 | 30 秒 |
 
 合計: 8〜12 分
 
@@ -58,13 +59,14 @@ Notion DB に 2 ページ作成（既存の tiktok-fit-notion-publisher の DB �
 - **Threads + Note 生成** → 本スキル `bb-note-threads` を使う
 - **TikTok カルーセルには LINE OC URL を絶対に入れない**（contents-fullmake/references/line-oc.md と整合）
 - **Threads にも LINE OC URL を入れない**。Threads は Note URL のみ
-- **Note 末尾はプロフィールリンク / 公式リンク集へ案内**し、その先で LINE OC を選択肢として見せる
+- **Note 末尾は公式 LINE OC 実リンクへ案内**する
 
 ## トーン
 
-- **標準語ベース** — 断定・体言止めを基調に、思想を叫ぶ BB トーン（旧仕様の関西弁レベル 2 は廃止）
+- **低温の標準語ベース** — 断定・体言止めを基調に、関西弁っぽい親しさや勢いを落とし、数字と事実で強く言う BB トーン（旧仕様の関西弁レベル 2 は廃止）
 - BB の「情熱が見える怒り」は事実と数字で表現する
-- Threads / Note 本文 = 標準語 BB トーン
+- Threads 本文 = 低温の標準語 BB トーン（`俺ら` は原則使わない）
+- Note 本文 = 標準語 BB トーン
 - Threads 最終リプ = 温かく、ゆるい Note 案内
 - Note 末尾 = 関連リンク案内。押し付けず、医療相談・個別診断ではない旨を明記
 - TikTok カルーセル（contents-fullmake）は従来通り標準語
@@ -73,12 +75,16 @@ Notion DB に 2 ページ作成（既存の tiktok-fit-notion-publisher の DB �
 
 - `SKILL.md` — オーケストレーター本体（Phase 0-4 のコア手順）
 - `references/workflow-spec.md` — Phase 詳細・エージェント通信仕様
-- `references/tone-guide.md` — **文体・トーンガイド（標準語ベース、共通、必読）**
-- `references/threads-style.md` — Threads 文体ガイド（ツリー構成・4 型）
-- `references/note-style.md` — Note 文体ガイド（標準語 BB トーン）
-- `references/line-oc-templates.md` — 関連リンク・コミュニティ案内テンプレ（Threads の Note 案内 + Note 末尾の温かいリンク案内）
+- `references/brand-profile.md` — BB の思想・対象読者・媒体別役割
+- `references/tone-guide.md` — 共通文体・低温の標準語ルール
+- `references/domain-vocabulary.md` — 専門用語の翻訳辞書
+- `references/threads-style.md` — Threads 共通ルール
+- `references/threads-patterns.md` — Threads 8 型テンプレ・カテゴリ × 型マッピング
+- `references/note-style.md` — Note 固有ルール
+- `references/cta-policy.md` — Threads 最終リプ / Note 末尾 / LINE OC 導線
 - `references/output-spec.md` — 出力フォーマット定義
 - `references/notion-publishing.md` — Notion 保存仕様
+- `references/note-com-publishing.md` — note.com 下書き保存仕様
 - `references/quality-gates.md` — セルフチェック・薬機法ゲート
 
 ## 依存スキル
@@ -95,8 +101,8 @@ Notion DB に 2 ページ作成（既存の tiktok-fit-notion-publisher の DB �
 
 - Threads 投稿には LINE 直リンクを置かない
 - Threads の最終リプは「詳しい根拠は Note に置いておきます」の温度感にする
-- Note 末尾は `## 関連リンク` とし、プロフィールリンク / 公式リンク集へ案内する
-- LINE オープンチャットは公式リンク集内の選択肢の 1 つとして扱う
+- Note 末尾は `## 関連リンク` とし、公式 LINE オープンチャットへの実リンクを入れる
+- Threads では LINE 直リンクを置かず、プロフィールの相談室として匂わせる
 - 健康・栄養・ヘルスケア領域では、個別の医療相談や診断ではない旨を明記する
 
 ## Note 有料化への備え
@@ -113,5 +119,5 @@ Note 有料化（Threads 500 フォロワー後）に備え、Notion DB に `pri
 
 - **タイトル評価フロー無し**: ユーザーが既にタイトルを決めている前提。投入されたタイトルをそのまま採用、各媒体微調整のみ実施
 - **Notion DB は既存 DB に追加**: 専用 DB を切らず、`content_type` で TikTok と分離。Notion 側のビュー設計のみで運用
-- **案内文は固定テンプレ + 軽い調整**: Threads は Note 案内、Note は関連リンク案内に寄せ、強い LINE 直誘導を避ける
+- **案内文は固定テンプレ + 軽い調整**: Threads は Note 案内、Note は公式 LINE OC 実リンク付きの関連リンク案内に寄せる
 - **paired_post_url で相互リンク**: Threads ⇔ Note の動線を Notion 上でも追跡可能に

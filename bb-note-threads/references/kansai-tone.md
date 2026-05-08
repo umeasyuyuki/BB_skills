@@ -19,4 +19,4 @@
 | 関西弁の案内文 + 固定CTA | Threads は温かい Note 案内、Note は関連リンク案内。旧固定CTAは廃止 |
 | 「〜やで」「〜ねん」「ほな」「せやから」「ほんま」「めっちゃ」 | 一切使用禁止 |
 
-詳細は [`tone-guide.md`](tone-guide.md) と [`line-oc-templates.md`](line-oc-templates.md) 参照。
+詳細は [`tone-guide.md`](tone-guide.md) と [`cta-policy.md`](cta-policy.md) 参照。
