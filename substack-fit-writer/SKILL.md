@@ -67,6 +67,10 @@ disable-model-invocation: true
 - AIっぽい一般論ではなく、人間が調べて考えた感じを残す
 - 語り口はゆるく、情報の芯は固くする
 
+### AIpreneur Hook
+
+SubstackのPostやAI活用ログを書く時は、必要に応じて `references/ai-preneur-hook.md` を読む。AIツール好きに刺さる軽いあるあるで仲間感を作り、フィットネス・栄養・ヘルスケアの判断基準へ接続する。
+
 ### Good Tone
 
 ```text
